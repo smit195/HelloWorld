@@ -183,21 +183,21 @@ app.get('/modifyColumn', function(request,response) {
 app.get('/manual', function(req, res) {
   try{
 
-    if(!checkData(req.headers.manual_command)){ //Check if manual command is valid
-      console.log("bad_manual_command");
-      throw "bad_manual_command";               //If any error throw it
+    if(!checkData(req.headers.command)){ //Check if manual command is valid
+      console.log("command = null");
+      throw "command = null";               //If any error throw it
     }
 
-    connection.query( req.headers.manual_command, function (error, results, fields) {
+    connection.query( req.headers.command, function (error, results, fields) {
           if(error) {
               res.send({
-                insert_status: "Manual Command Failed " + error //display error upon manual command failure
+                insert_status: "Command Failed " + error //display error upon manual command failure
               });
           }
           else {
               res.send({
-                insert_status : "Manual Command successful!", //display success confirmation + manual command results
-                "Command" : req.headers.manual_command,
+                insert_status : "Command successful!", //display success confirmation + manual command results
+                "Command" : req.headers.command,
                 "results" : results
               });
           }
@@ -314,18 +314,18 @@ app.post('/firstTimeRegistration', function(req, res) {
     // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
     //        Using camel case will generate an error
     //        Data will NOT be written to server
-    if(!checkData(req.headers.deviceAddress)){ //Check if device address is valid
-      console.log("bad_deviceAddress");
-      throw "deviceAddress = null";               //If any error, throw it
+    if(!checkData(req.headers.deviceaddress)){ //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";               //If any error, throw it
     }
 
     if(!checkData(req.body.firstName)){         //Check if the First Name is valid
-      console.log("bad_firstName");
+      console.log("firstName = null");
       throw "firstName = null";
     }
 
     if(!checkData(req.body.lastName)){          //Check if the Last Name is valid
-      console.log("bad_lastName");
+      console.log("lastName = null");
       throw "lastName = null";
     }
 
@@ -338,7 +338,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team) VALUES ('" +
       req.body.firstName + "', '" +
       req.body.lastName + "', " +
-      req.headers.deviceAddress + ", " +
+      req.headers.deviceaddress + ", " +
       //availability defaults to false
       "false, " + "'" +
       req.body.team + "'" +
@@ -354,7 +354,7 @@ app.post('/firstTimeRegistration', function(req, res) {
           else {
               res.send({
                 insert_status : "INSERT successful", //display success confirmation + INSERT results
-                "deviceAddress" : req.headers.deviceAddress,
+                "deviceAddress" : req.headers.deviceaddress,
                 "results" : results
               });
           }
