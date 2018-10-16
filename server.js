@@ -183,20 +183,20 @@ app.get('/modifyColumn', function(request,response) {
 app.get('/manual', function(req, res) {
   try{
 
-    if(!checkData(req.headers.command)){ //Check if manual command is valid
+    if(!checkData(req.headers.command)){    //Check if manual command is valid
       console.log("command = null");
       throw "command = null";               //If any error throw it
     }
 
-    connection.query( req.headers.command, function (error, results, fields) {
+    connection.query( req.headers.command + ";", function (error, results, fields) {
           if(error) {
               res.send({
-                insert_status: "Command Failed " + error //display error upon manual command failure
+                command_status: "Command Failed " + error //display error upon manual command failure
               });
           }
           else {
               res.send({
-                insert_status : "Command successful!", //display success confirmation + manual command results
+                command_status : "Command successful!", //display success confirmation + manual command results
                 "Command" : req.headers.command,
                 "results" : results
               });
@@ -621,30 +621,3 @@ function checkData(data) {
 
 app.listen(port);
 module.exports = app;
-
-
-/*
-var conn_success = false;   //checks conncection status
-var global_error;                  //global error variable
-
-//connect to RDS database
-connection.connect(function(error) {
-  if (error) {
-    conn_success = false;
-    global_error = error;
-    console.log('Failure: NOT Connected to database.');
-    return;
-  }
-  conn_success = true;
-  console.log('Connected to database.');
-});
-
-app.get('/', function(request, response) {
-  if(!conn_success) {
-    response.json({server_connect_status: 'Failed: ' + global_error});
-  }
-  else {
-    response.json({server_connect_status: 'Successful'});
-  }
-});
-*/
