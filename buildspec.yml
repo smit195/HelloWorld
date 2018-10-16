@@ -21,7 +21,7 @@ phases:
       - rm -r node_modules
 
       # Install runtime dependencies
-       npm install --production
+      - npm install --production
       - npm install body-parser
       - npm install mysql
       - npm install validator
