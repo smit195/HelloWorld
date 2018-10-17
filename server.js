@@ -196,7 +196,7 @@ app.get('/manual', function(req, res) {
           }
           else {
               res.send({
-                command_status : "Successful!", //display success confirmation + manual command results
+                command_status : "Successful!",  //display success confirmation + manual command results
                 "Command" : req.headers.command,
                 "results" : results
               });
@@ -263,7 +263,7 @@ app.get('/selectAll', function(request, response) {
 app.get('/userInfo', function(req, res) {
   try{
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
     if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
@@ -311,12 +311,12 @@ app.get('/userInfo', function(req, res) {
 app.post('/firstTimeRegistration', function(req, res) {
   try {
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //        Using camel case will generate an error
     //        Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){ //Check if device address is valid
+    if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
       console.log("deviceaddress = null");
-      throw "deviceaddress = null";               //If any error, throw it
+      throw "deviceaddress = null";             //If any error, throw it
     }
 
     if(!checkData(req.body.firstName)){         //Check if the First Name is valid
@@ -380,7 +380,7 @@ app.post('/firstTimeRegistration', function(req, res) {
 app.post('/updateTeam', function(req, res) {
   try{
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
     if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
@@ -388,9 +388,9 @@ app.post('/updateTeam', function(req, res) {
       throw "deviceaddress = null";              //If any error throw it
     }
 
-    if(!checkData(req.body.team)){                //Check if team number is valid
+    if(!checkData(req.body.team)){               //Check if team number is valid
       console.log("team = null");
-      throw "team = null";                        //If any error throw it
+      throw "team = null";                       //If any error throw it
     }
 
     //UPDATE query changes data points associated with a given 'device_address'
@@ -436,17 +436,17 @@ app.post('/updateTeam', function(req, res) {
 app.post('/updateSkills', function(req, res) {
   try{
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
       console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
+      throw "deviceaddress = null";             //If any error throw it
     }
 
-    if(!checkData(req.body.skills)){              //Check if package is valid
+    if(!checkData(req.body.skills)){            //Check if package is valid
       console.log("skills = null");
-      throw "skills = null";                         //If any error throw it
+      throw "skills = null";                    //If any error throw it
     }
 
     //UPDATE query changes data points associated with a given 'device_address'
@@ -492,17 +492,17 @@ app.post('/updateSkills', function(req, res) {
 app.post('/updateProfilePic', function(req, res) {
   try{
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
       console.log("deviceaddress = null");
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.body.image)){               //Check if image is valid
+    if(!checkData(req.body.image)){                 //Check if image is valid
       console.log("image = null");
-      throw "image = null";                          //If any error throw it
+      throw "image = null";                         //If any error throw it
     }
 
     //UPDATE query adds an image.png for a given 'device_address'
@@ -548,17 +548,17 @@ app.post('/updateProfilePic', function(req, res) {
 app.post('/updateAvailability', function(req, res) {
   try{
 
-    // WARNING: DO NOT CHANGE FORMAT OF 'device_address'
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
     if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
       console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
+      throw "deviceaddress = null";              //If any error throw it
     }
 
-    if(!checkData(req.body.availability)){        //Check if availability is valid
+    if(!checkData(req.body.availability)){       //Check if availability is valid
       console.log("availability = null");
-      throw "availability = null";                   //If any error throw it
+      throw "availability = null";               //If any error throw it
     }
 
     //UPDATE query changes data points associated with a given 'device_address'
