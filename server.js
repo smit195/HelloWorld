@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const fs = require ('fs');
+const formdata = require ('form-data');
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -500,7 +502,12 @@ app.post('/updateProfilePic', function(req, res) {
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.body.image)){                 //Check if image is valid
+    var form = new FormData();
+    form.append('my_field', 'my value');
+    form.append('buffer', new Buffer(10));
+    form.append('profile_picture', fs.createReadStream(req.body.image));
+
+    if(!checkData(form.profile_picture)){           //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
@@ -509,7 +516,7 @@ app.post('/updateProfilePic', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST ('" +
-      req.body.image + "' AS BINARY) WHERE device_address = " +
+      form.profile_picture + "' AS BINARY) WHERE device_address = " +
       req.headers.deviceaddress + ";", function (error, results, fields) {
           if(error) {
               res.send({

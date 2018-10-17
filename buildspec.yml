@@ -9,6 +9,8 @@ phases:
       - npm install mysql
       - npm install validator
       - npm install express
+      - npm install --save form-data
+      - npm install fs
 
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
@@ -27,6 +29,8 @@ phases:
       - npm install mysql
       - npm install validator
       - npm install express
+      - npm install --save form-data
+      - npm install fs
 
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
