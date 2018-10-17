@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const fs = require ('fs');
 const formdata = require ('form-data');
+const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -491,7 +492,7 @@ app.post('/updateSkills', function(req, res) {
    NOTES:      Recives an API Post request, updates a users
                 profile picture
 ****************************************************************/
-app.post('/updateProfilePic', function(req, res) {
+app.post('/updateProfilePic', upload.single('image') function(req, res) {
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -502,12 +503,7 @@ app.post('/updateProfilePic', function(req, res) {
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    var form = new FormData();
-    form.append('my_field', 'my value');
-    form.append('buffer', new Buffer(10));
-    form.append('profile_picture', fs.createReadStream(req.body.image));
-
-    if(!checkData(form.profile_picture)){           //Check if image is valid
+    if(!checkData(req.file.buffer)){           //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
@@ -516,7 +512,7 @@ app.post('/updateProfilePic', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST ('" +
-      form.profile_picture + "' AS BINARY) WHERE device_address = " +
+      req.file.buffer + "' AS BINARY) WHERE device_address = " +
       req.headers.deviceaddress + ";", function (error, results, fields) {
           if(error) {
               res.send({
