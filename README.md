@@ -1,8 +1,8 @@
 # VALKYRIE README
 
 Database Access URL's:
-  + Production Server URL:   http://ec2-18-218-181-222.us-east-2.compute.amazonaws.com/
-  + Test Server URL:         http://ec2-18-218-162-74.us-east-2.compute.amazonaws.com/
+  + Production Server URL:   http://team6-productioapp.zet8uiimnv.us-east-2.elasticbeanstalk.com/
+  + Test Server URL:         http://team6-testserveapp.im8j6rkm83.us-east-2.elasticbeanstalk.com/
 
 
   * Register new user       : server_url/firstTimeRegistration (POST)
@@ -19,14 +19,14 @@ Current Table Schema:
   * device_address VARCHAR(40)
   * availability BOOLEAN not null      //defaults to 'false'
   * team VARCHAR(25) not null
-  * userSkillPackage JSON
+  * user_skill_package JSON
   * profile_picture LONGBLOB
   * PRIMARY KEY (device_address)
 
 Database Expectations:
   * first_name       : Body as "firstName"
   * last_name        : Body as "lastName"
-  * device_address   : Header as "device_address"
+  * device_address   : Header as "deviceaddress"
   * team             : Body as "team"
   * userSkillPackage : Body as "skills", each item MUST be wrapped in double quotes and separated by commas
   * availability     : Body as "availability"
