@@ -7,6 +7,8 @@ const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
 
+let upload  = multer({ storage: multer.memoryStorage() });
+
 app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
 
