@@ -179,7 +179,7 @@ app.get('/modifyColumn', function(request,response) {
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-
+/*
 app.get('/manual', function(req, res) {
   try{
 
@@ -211,7 +211,7 @@ app.get('/manual', function(req, res) {
     });
   }
 });
-
+*/
 /****************************************************************
 
    FUNCTION:   GET: SELECT all from table
