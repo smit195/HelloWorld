@@ -8,6 +8,7 @@ phases:
       - npm install body-parser
       - npm install mysql
       - npm install validator
+      - npm install express
 
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
@@ -25,6 +26,7 @@ phases:
       - npm install body-parser
       - npm install mysql
       - npm install validator
+      - npm install express
 
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
