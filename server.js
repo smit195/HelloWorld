@@ -492,7 +492,7 @@ app.post('/updateSkills', function(req, res) {
    NOTES:      Recives an API Post request, updates a users
                 profile picture
 ****************************************************************/
-app.post('/updateProfilePic', upload.single('image') function(req, res) {
+app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
