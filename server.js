@@ -576,12 +576,12 @@ app.post('/updateAvailability', function(req, res) {
       req.headers.deviceaddress + ";", function (error, results, fields) {
           if(error) {
               res.send({
-                team_update_status: "Failed: " + error //display error upon UPDATE failure
+                availability_update_status: "Failed: " + error //display error upon UPDATE failure
               });
           }
           else {
               res.send({
-                team_update_status : "Successful", //display success confirmation + UPDATE results
+                availability_update_status : "Successful", //display success confirmation + UPDATE results
                 "deviceaddress" : req.headers.deviceaddress,
                 "results" : results
               });
