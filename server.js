@@ -78,14 +78,14 @@ until a specific table must be dropped
 ****************************************************************/
 /*
 app.get('/dropTable', function(request,response) {
-connection.query( 'DROP TABLE userinfotable', function (error, results, fields) {
-if(error) {
-response.send({table_drop_status: "Failed: " + error});
-}
-else {
-response.send({table_drop_status: "Successful"});
-}
-});
+  connection.query( 'DROP TABLE userinfotable', function (error, results, fields) {
+    if(error) {
+      response.send({table_drop_status: "Failed: " + error});
+    }
+    else {
+      response.send({table_drop_status: "Successful"});
+    }
+  });
 });
 */
 
@@ -104,14 +104,14 @@ until a specific column must be dropped
 ****************************************************************/
 /*
 app.get('/dropColumn', function(request,response) {
-connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable DROP COLUMN [COLUMN NAME]', function (error, results, fields) {
-if(error) {
-response.send({column_drop_status: "Failed: " + error});
-}
-else {
-response.send({column_drop_status: "Successful"});
-}
-});
+  connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable DROP COLUMN [COLUMN NAME]', function (error, results, fields) {
+    if(error) {
+      response.send({column_drop_status: "Failed: " + error});
+    }
+    else {
+      response.send({column_drop_status: "Successful"});
+    }
+  });
 });
 */
 
@@ -130,14 +130,14 @@ until a specific column must be added
 ****************************************************************/
 /*
 app.get('/addColumn', function(request,response) {
-connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable ADD COLUMN [COLUMMN NAME] [DATA DEFINITION] AFTER [COLUMN NAME]', function (error, results, fields) {
-if(error) {
-response.send({column_update_status: "Failed: " + error});
-}
-else {
-response.send({column_update_status: "Successful"});
-}
-});
+  connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable ADD COLUMN [COLUMMN NAME] [DATA DEFINITION] AFTER [COLUMN NAME]', function (error, results, fields) {
+    if(error) {
+      response.send({column_update_status: "Failed: " + error});
+    }
+    else {
+      response.send({column_update_status: "Successful"});
+    }
+  });
 });
 */
 
@@ -156,18 +156,18 @@ until a specific column must be modified
 ****************************************************************/
 /*
 app.get('/modifyColumn', function(request,response) {
-connection.query( "ALTER TABLE valkyriePrimaryDB.userinfotable CHANGE userSkillPackage user_skill_package;", function (error, results, fields) {
-if(error) {
-response.send({
-modify_column_status: "Failed: " + error
-});
-}
-else {
-response.send({
-modify_column_status: "Successful"
-});
-}
-});
+  connection.query( "ALTER TABLE valkyriePrimaryDB.userinfotable CHANGE userSkillPackage user_skill_package;", function (error, results, fields) {
+    if(error) {
+      response.send({
+        modify_column_status: "Failed: " + error
+      });
+    }
+    else {
+      response.send({
+        modify_column_status: "Successful"
+      });
+    }
+  });
 });
 */
 
@@ -186,35 +186,35 @@ an intermediary, thereby manipulating the RDS
 //          ALWAYS DISABLE WHEN NOT BEING USED.
 /*
 app.get('/manual', function(req, res) {
-try{
+  try{
 
-if(!checkData(req.headers.command)){    //Check if manual command is valid
-console.log("command = null");
-throw "command = null";               //If any error throw it
-}
+    if(!checkData(req.headers.command)){    //Check if manual command is valid
+      console.log("command = null");
+      throw "command = null";               //If any error throw it
+    }
 
-connection.query( req.headers.command + ";", function (error, results, fields) {
-if(error) {
-res.send({
-command_status: "Failed " + error //display error upon manual command failure
-});
-}
-else {
-res.send({
-command_status : "Successful!",  //display success confirmation + manual command results
-"Command" : req.headers.command,
-"results" : results
-});
-}
-});
-} catch(e) {
-console.log("Invalid: " + e); //Print the error
+    connection.query( req.headers.command + ";", function (error, results, fields) {
+      if(error) {
+        res.send({
+          command_status: "Failed " + error //display error upon manual command failure
+        });
+      }
+      else {
+        res.send({
+          command_status : "Successful!",  //display success confirmation + manual command results
+          "Command" : req.headers.command,
+          "results" : results
+        });
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error
 
-res.send({  //Send the error back to the app as JSON
-"confirmation" : "fail",
-"reason" : e
-});
-}
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "fail",
+      "reason" : e
+    });
+  }
 });
 */
 /****************************************************************
