@@ -483,7 +483,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
     ", team = '" + req.body.team + ',' +
-    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' + "';" , function (error, results, fields) {
+    'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' + "';" , function (error, results, fields) {
       if(error) {
         res.send({
           insert_status: "Failed: " + error //display error on INSERT failure
