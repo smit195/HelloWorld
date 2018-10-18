@@ -482,7 +482,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
-    ", team = '" + req.body.team + ',' +
+    ", team = '" + req.body.team + "'," +
     'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' + "';" , function (error, results, fields) {
       if(error) {
         res.send({
