@@ -12,6 +12,9 @@ Database Access URL's:
   * Update skills           : server_url/updateSkills (POST)
   * Update picture          : server_url/updateProfilePic (POST)
   * Update availability     : server_url/updateAvailability (POST)
+  * Check-in to area        : server_url/checkIn (GET)
+  * Check-out of area       : server_url/checkOut (GET)
+  * Get local users         : server_url/getCurrent (GET)
 
 Current Table Schema:
   * first_name VARCHAR(15) not null
@@ -19,7 +22,7 @@ Current Table Schema:
   * device_address VARCHAR(40)
   * availability BOOLEAN not null      //defaults to 'false'
   * team VARCHAR(25) not null
-  * user_skill_package JSON
+  * user_skill_package JSON            //defaults to three empty strings
   * profile_picture LONGBLOB
   * PRIMARY KEY (device_address)
 

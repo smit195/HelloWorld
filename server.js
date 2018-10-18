@@ -478,6 +478,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     //availability defaults to false
     "false, " + "'" +
     req.body.team + "', " +
+    //defaults to three empty strings
     'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
     //ON DUPLICATE KEY updates an existing users data based on the device_address
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
