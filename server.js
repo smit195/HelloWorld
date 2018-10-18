@@ -24,32 +24,6 @@ var connection = mysql.createConnection({
 
 /****************************************************************
 
-   FUNCTION:   GET: DROP table from database
-
-   ARGUMENTS:  Request on the API stream
-
-   RETURNS:    Returns a confirmation package
-
-   NOTES:      This query statement drops a table from the data-
-                base. This query is constantly being modified
-                to keep up with database demands. Disabled
-                until a specific table must be dropped
-****************************************************************/
-/*
-app.get('/dropTable', function(request,response) {
-  connection.query( 'DROP TABLE userinfotable', function (error, results, fields) {
-        if(error) {
-            response.send({table_drop_status: "Failed: " + error});
-        }
-        else {
-            response.send({table_drop_status: "Successful"});
-        }
-  });
-});
-*/
-
-/****************************************************************
-
    FUNCTION:   GET: CREATE Table for database
 
    ARGUMENTS:  Request on the API stream
@@ -88,6 +62,32 @@ app.get('/create_userinfotable', function(request,response) {
         });
       }
 });
+
+/****************************************************************
+
+   FUNCTION:   GET: DROP table from database
+
+   ARGUMENTS:  Request on the API stream
+
+   RETURNS:    Returns a confirmation package
+
+   NOTES:      This query statement drops a table from the data-
+                base. This query is constantly being modified
+                to keep up with database demands. Disabled
+                until a specific table must be dropped
+****************************************************************/
+/*
+app.get('/dropTable', function(request,response) {
+  connection.query( 'DROP TABLE userinfotable', function (error, results, fields) {
+        if(error) {
+            response.send({table_drop_status: "Failed: " + error});
+        }
+        else {
+            response.send({table_drop_status: "Successful"});
+        }
+  });
+});
+*/
 
 /****************************************************************
 
@@ -534,6 +534,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     res.send({  //Send the error back to the app as JSON
       "confirmation" : "fail",
+      "deviceaddress" : req.headers.deviceaddress,
+      "image" : req.file,
       "reason" : e
     });
   }
