@@ -478,7 +478,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     //availability defaults to false
     "false, " + "'" +
     req.body.team + "'," +
-    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
+    'JSON_OBJECT( "skills", JSON_ARRAY ("N/A", "N/A", "N/A"))' +
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
