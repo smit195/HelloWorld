@@ -33,8 +33,8 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      This query statements creates our user info table
-if one does not already exists within the DB.
-NOTE: Table schema represented here
+            if one does not already exists within the DB.
+            NOTE: Table schema represented here
 ****************************************************************/
 app.get('/create_userinfotable', function(request,response) {
   try {
@@ -74,9 +74,9 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      This query statement drops a table from the data-
-base. This query is constantly being modified
-to keep up with database demands. Disabled
-until a specific table must be dropped
+            base. This query is constantly being modified
+            to keep up with database demands. Disabled
+            until a specific table must be dropped
 ****************************************************************/
 /*
 app.get('/dropTable', function(request,response) {
@@ -100,9 +100,9 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      This query statement drops a new column from the
-table. This query is constantly being modified
-to keep up with database demands. Disabled
-until a specific column must be dropped
+            table. This query is constantly being modified
+            to keep up with database demands. Disabled
+            until a specific column must be dropped
 ****************************************************************/
 /*
 app.get('/dropColumn', function(request,response) {
@@ -126,9 +126,9 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      This query statement adds a new column to the
-table. This query is constantly being modified
-to keep up with database demands. Disabled
-until a specific column must be added
+            table. This query is constantly being modified
+            to keep up with database demands. Disabled
+            until a specific column must be added
 ****************************************************************/
 /*
 app.get('/addColumn', function(request,response) {
@@ -152,9 +152,9 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      This query statement modifies a column in the
-table. This query is constantly being modified
-to keep up with database demands. Disabled
-until a specific column must be modified
+            table. This query is constantly being modified
+            to keep up with database demands. Disabled
+            until a specific column must be modified
 ****************************************************************/
 /*
 app.get('/modifyColumn', function(request,response) {
@@ -182,7 +182,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    Returns a confirmation package
 
 NOTES:      Allows someone to send a query statement through
-an intermediary, thereby manipulating the RDS
+            an intermediary, thereby manipulating the RDS
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
@@ -226,10 +226,10 @@ FUNCTION:   GET: SELECT all from table
 ARGUMENTS:  Request on the API stream
 
 RETURNS:    Returns a confirmation package and results from
-SELECT query.
+            SELECT query.
 
 NOTES:      This query statement requests the entire table and
-returns the results back as a JSON package.
+            returns the results back as a JSON package.
 ****************************************************************/
 app.get('/selectAll', function(request, response) {
   try {
@@ -265,7 +265,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Get request, using device_address
-returns data associated with that device_address
+            returns data associated with that device_address
 ****************************************************************/
 app.get('/userInfo', function(req, res) {
   try{
@@ -442,7 +442,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API post request, checks the data to see
-if it is present, then add it to the DB.
+            if it is present, then add it to the DB.
 ****************************************************************/
 app.post('/firstTimeRegistration', function(req, res) {
   try {
@@ -471,13 +471,14 @@ app.post('/firstTimeRegistration', function(req, res) {
     }
 
     //INSERT query creates a new person in userinfotable
-    connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team) VALUES ('" +
+    connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team, user_skill_package) VALUES ('" +
     req.body.firstName + "', '" +
     req.body.lastName + "', " +
     req.headers.deviceaddress + ", " +
     //availability defaults to false
     "false, " + "'" +
-    req.body.team + "'" +
+    req.body.team + "'," +
+    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
@@ -511,7 +512,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a persons
-team number
+            team number
 ****************************************************************/
 app.post('/updateTeam', function(req, res) {
   try{
@@ -567,7 +568,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a persons
-team number
+            team number
 ****************************************************************/
 app.post('/updateSkills', function(req, res) {
   try{
@@ -623,7 +624,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
-profile picture
+            profile picture
 ****************************************************************/
 //upload is a 'multer' object
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
@@ -739,7 +740,7 @@ ARGUMENTS:  A single value from the API
 RETURNS:    True if valid, False if Invalid
 
 NOTES:      Checks the data that was recived from the API call
-to see if it is valid
+            to see if it is valid
 ****************************************************************/
 function checkData(data) {
   if (data == null) //Check if data is null
