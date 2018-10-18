@@ -22,6 +22,8 @@ var connection = mysql.createConnection({
   multipleStatements: true
 });
 
+var currentUsers = [];
+
 /****************************************************************
 
 FUNCTION:   GET: CREATE Table for database
@@ -304,6 +306,135 @@ app.get('/userInfo', function(req, res) {
 
 /****************************************************************
 
+FUNCTION:   GET: Check in to local area
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an GET Post request, updates a persons
+            availability in the physical space
+****************************************************************/
+app.get('/checkIn', function(req, res) {
+  try{
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+    //          Using camel case will generate an error
+    //          Data will NOT be written to server
+    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";                 //If any error throw it
+    }
+
+    //SELECT query grabs data points associated with a given 'device_address'
+    connection.query( "SELECT * FROM userinfotable where device_address = " + req.headers.deviceaddress + ";", function (error, results, fields) {
+      if(error) {
+        res.send({
+          checkin_status: "Check in failed"           //send error
+        });
+      }
+      else if(results.length == 0)
+      {
+        res.send({
+          checkin_status: "No device address in DB"   //send error
+        });
+      }
+
+      else {
+        for (var i=0; i<currentUsers.length; i++){                           //Look for deviceAddress in the array
+          if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+            res.send({
+              user_select_status : "Successful",                             //display success confirmation + SELECT results
+              "device_address" : req.headers.deviceaddress
+            });
+            return;
+          }
+        }
+
+        currentUsers.push(results[0]);
+        res.send({
+          user_select_status : "Successful",                         //display success confirmation + SELECT results
+          "device_address" : req.headers.deviceaddress
+        });
+      }
+    });
+  } catch(e) {
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Failed",
+      "reason" : e
+    });
+  }
+});
+
+
+/****************************************************************
+
+FUNCTION:   GET: Check out of local area
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an GET Post request, updates a persons
+            availability in the physical space
+****************************************************************/
+app.get('/checkOut', function(req, res) {
+  try{
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+    //          Using camel case will generate an error
+    //          Data will NOT be written to server
+    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";                 //If any error throw it
+    }
+
+    for (var i=0; i<currentUsers.length; i++){  //Look for deviceAddress in the array
+      if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+        currentUsers.splice(i, 1);  //Delete it
+      }
+    }
+
+    res.send({
+      checkout_status : "Successful",
+      "device_address" : req.headers.deviceaddress
+    });
+  }catch(e) {
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Failed",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+FUNCTION:   GET: Query who is in immediate area
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an GET Post request, returns the array
+            containing the users in proximity
+****************************************************************/
+app.get('/getCurrent', function(request, response) {
+  try {
+    response.send({
+      get_current_status: "Successful",
+      "results" : currentUsers
+    });
+
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "fail",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
 FUNCTION:   POST: INSERT data from /firstTimeRegistration
 
 ARGUMENTS:  Request on the API stream
@@ -552,7 +683,7 @@ ARGUMENTS:  Request on the API stream
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a persons
-availability
+            availability
 ****************************************************************/
 app.post('/updateAvailability', function(req, res) {
   try{
