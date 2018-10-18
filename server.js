@@ -494,6 +494,7 @@ app.post('/updateSkills', function(req, res) {
    NOTES:      Recives an API Post request, updates a users
                 profile picture
 ****************************************************************/
+                            //upload is a 'multer' object
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
 
@@ -525,6 +526,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
               res.send({
                 image_update_status : "Successful", //display success confirmation + UPDATE results
                 "deviceaddress" : req.headers.deviceaddress,
+                "image" : req.file,
                 "results" : results
               });
           }
