@@ -477,13 +477,14 @@ app.post('/firstTimeRegistration', function(req, res) {
     req.headers.deviceaddress + ", " +
     //availability defaults to false
     "false, " + "'" +
-    req.body.team + "'," +
+    req.body.team + "', " +
     'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
+    //ON DUPLICATE KEY updates an existing users data based on the device_address
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
-    ", team = '" + req.body.team + "'," +
-    'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' + "';" , function (error, results, fields) {
+    ", team = '" + req.body.team +
+    "', " + 'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""));' , function (error, results, fields) {
       if(error) {
         res.send({
           insert_status: "Failed: " + error //display error on INSERT failure
