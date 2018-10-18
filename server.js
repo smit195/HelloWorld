@@ -478,11 +478,12 @@ app.post('/firstTimeRegistration', function(req, res) {
     //availability defaults to false
     "false, " + "'" +
     req.body.team + "'," +
-    'JSON_OBJECT( "skills", JSON_ARRAY ("N/A", "N/A", "N/A"))' +
+    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
     "', availability = false" +
-    ", team = '" + req.body.team + "';" , function (error, results, fields) {
+    ", team = '" + req.body.team + ',' +
+    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' + "';" , function (error, results, fields) {
       if(error) {
         res.send({
           insert_status: "Failed: " + error //display error on INSERT failure
