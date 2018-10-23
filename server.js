@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 let upload  = multer({ storage: multer.memoryStorage() });
+//var upload = multer().single('image')
 
 app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
@@ -417,17 +418,30 @@ NOTES:      Recives an GET Post request, returns the array
             containing the users in proximity
 ****************************************************************/
 app.get('/getCurrent', function(request, response) {
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
+  }
+
+  var TEMPcurrentUsers = currentUsers;
+
   try {
+    for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
+      if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+        TEMPcurrentUsers.splice(i, 1);  //Delete it
+      }
+    }
+
     response.send({
       get_current_status: "Successful",
-      "results" : currentUsers
+      "results" : TEMPcurrentUsers
     });
 
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
+      "confirmation" : "fail",
       "reason" : e
     });
   }
@@ -629,28 +643,30 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
+
+            app.post('/updateProfilePic', function(req, res) {
+              upload(req, res, function (err) {
+                if (err instanceof multer.MulterError) {
+                  // A Multer error occurred when uploading.
+                  res.send({  //Send the error back to the app
+                    "confirmation" : "Multer Failure",
+                    "reason" : err
+                  });
+                } else if (err) {
+                  // An unknown error occurred when uploading.
+                  res.send({  //Send the error back to the app
+                    "confirmation" : "Unknown Failure",
+                    "reason" : err
+                  });
+                }
+                // Everything went fine.
+                res.send({  //Send the error back to the app
+                  "confirmation" : "Multer Successful"
+                });
+              })
 ****************************************************************/
 //upload() is a 'multer' object function..... upload.single('image')
-app.post('/updateProfilePic', function(req, res) {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      res.send({  //Send the error back to the app
-        "confirmation" : "Multer Fail",
-        "reason" : err
-      });
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      res.send({  //Send the error back to the app
-        "confirmation" : "Multer Fail",
-        "reason" : err
-      });
-    }
-    // Everything went fine.
-    res.send({  //Send the error back to the app
-      "confirmation" : "Multer Successful"
-    });
-  })
+app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -667,13 +683,13 @@ app.post('/updateProfilePic', function(req, res) {
     }
 
     //req.file.setEncoding('binary')
-    var imageBuffer = new Buffer(req.file, "base64")
+    //var imageBuffer = new Buffer(req.file, "base64")
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST ('" +
-    imageBuffer + "' AS BINARY) WHERE device_address = " +
+    req.file + "' AS BINARY) WHERE device_address = " +
     req.headers.deviceaddress + ";", function (error, results, fields) {
       if(error) {
         res.send({
