@@ -646,6 +646,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "image = null";                         //If any error throw it
     }
 
+    req.file.setEncoding('binary')
     var imageBuffer = new Buffer(req.file, "utf-8")
 
     //UPDATE query adds an image.png for a given 'device_address'
@@ -663,7 +664,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.send({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          "image" : req.file,
+          //"image" : req.file,
           "results" : results
         });
       }
@@ -672,9 +673,9 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Failure",
       "deviceaddress" : req.headers.deviceaddress,
-      "image" : req.file,
+      "image" : imageBuffer,
       "reason" : e
     });
   }
