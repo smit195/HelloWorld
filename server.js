@@ -473,8 +473,8 @@ app.post('/firstTimeRegistration', function(req, res) {
     //INSERT query creates a new person in userinfotable
     connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team, user_skill_package) VALUES ('" +
     req.body.firstName + "', '" +
-    req.body.lastName + "', " +
-    req.headers.deviceaddress + ", " +
+    req.body.lastName + "', '" +
+    req.headers.deviceaddress + "', " +
     //availability defaults to false
     "false, " + "'" +
     req.body.team + "', " +
