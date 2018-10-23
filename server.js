@@ -646,8 +646,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "image = null";                         //If any error throw it
     }
 
-    req.file.setEncoding('binary')
-    var imageBuffer = new Buffer(req.file, "utf-8")
+    //req.file.setEncoding('binary')
+    var imageBuffer = new Buffer(req.file, "base64")
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
