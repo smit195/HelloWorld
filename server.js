@@ -186,7 +186,7 @@ NOTES:      Allows someone to send a query statement through
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-/*
+
 app.get('/manual', function(req, res) {
   try{
 
@@ -218,7 +218,7 @@ app.get('/manual', function(req, res) {
     });
   }
 });
-*/
+
 /****************************************************************
 
 FUNCTION:   GET: SELECT all from table
@@ -629,7 +629,7 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an API Post request, updates a users
             profile picture
 ****************************************************************/
-//upload is a 'multer' object
+//upload() is a 'multer' object
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
 
