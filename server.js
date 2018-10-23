@@ -59,7 +59,7 @@ app.get('/create_userinfotable', function(request,response) {
     console.log("Invalid: " + e); //Print the error to console
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -213,7 +213,7 @@ app.get('/manual', function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -250,7 +250,7 @@ app.get('/selectAll', function(request, response) {
     console.log("Invalid: " + e); //Print the error to console
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -298,7 +298,7 @@ app.get('/userInfo', function(req, res) {
     console.log("Invalid: " + e); //Print the error to console
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -359,7 +359,7 @@ app.get('/checkIn', function(req, res) {
     });
   } catch(e) {
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Failed",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -399,7 +399,7 @@ app.get('/checkOut', function(req, res) {
     });
   }catch(e) {
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Failed",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -427,7 +427,7 @@ app.get('/getCurrent', function(request, response) {
     console.log("Invalid: " + e); //Print the error to console
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -501,7 +501,8 @@ app.post('/firstTimeRegistration', function(req, res) {
     });
   } catch(e) {
     res.send({
-      insert_status: "Insert failed: " + e //display error on server failure
+      "confirmation" : "Server Failure",
+      "reason" : e
     })
   }
 });
@@ -556,7 +557,7 @@ app.post('/updateTeam', function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -612,7 +613,7 @@ app.post('/updateSkills', function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
@@ -629,8 +630,27 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an API Post request, updates a users
             profile picture
 ****************************************************************/
-//upload() is a 'multer' object
-app.post('/updateProfilePic', upload.single('image'), function(req, res) {
+//upload() is a 'multer' object function..... upload.single('image')
+app.post('/updateProfilePic', function(req, res) {
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading.
+      res.send({  //Send the error back to the app
+        "confirmation" : "Multer Fail",
+        "reason" : err
+      });
+    } else if (err) {
+      // An unknown error occurred when uploading.
+      res.send({  //Send the error back to the app
+        "confirmation" : "Multer Fail",
+        "reason" : err
+      });
+    }
+    // Everything went fine.
+    res.send({  //Send the error back to the app
+      "confirmation" : "Multer Successful"
+    });
+  })
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -673,7 +693,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Failure",
+      "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
       "image" : imageBuffer,
       "reason" : e
@@ -731,7 +751,7 @@ app.post('/updateAvailability', function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
+      "confirmation" : "Server Failure",
       "reason" : e
     });
   }
