@@ -7,7 +7,7 @@ const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
 
-let upload  = multer({ storage: multer.memoryStorage() });
+//let upload  = multer({ storage: multer.memoryStorage() });
 //var upload = multer().single('image')
 
 app.use(bodyParser.json());  //Read it in as JSON
@@ -417,7 +417,7 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an GET Post request, returns the array
             containing the users in proximity
 ****************************************************************/
-app.get('/getCurrent', function(request, response) {
+app.get('/getCurrent', function(req, res) {
   if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
     console.log("deviceaddress = null");
     throw "deviceaddress = null";                 //If any error throw it
@@ -427,12 +427,12 @@ app.get('/getCurrent', function(request, response) {
 
   try {
     for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+      if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
         TEMPcurrentUsers.splice(i, 1);  //Delete it
       }
     }
 
-    response.send({
+    res.send({
       get_current_status: "Successful",
       "results" : TEMPcurrentUsers
     });
@@ -644,29 +644,10 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an API Post request, updates a users
             profile picture
 
-            app.post('/updateProfilePic', function(req, res) {
-              upload(req, res, function (err) {
-                if (err instanceof multer.MulterError) {
-                  // A Multer error occurred when uploading.
-                  res.send({  //Send the error back to the app
-                    "confirmation" : "Multer Failure",
-                    "reason" : err
-                  });
-                } else if (err) {
-                  // An unknown error occurred when uploading.
-                  res.send({  //Send the error back to the app
-                    "confirmation" : "Unknown Failure",
-                    "reason" : err
-                  });
-                }
-                // Everything went fine.
-                res.send({  //Send the error back to the app
-                  "confirmation" : "Multer Successful"
-                });
-              })
+            app.post('/updateProfilePic', upload.single('image'), function(req, res) {
+              try{
 ****************************************************************/
-//upload() is a 'multer' object function..... upload.single('image')
-app.post('/updateProfilePic', upload.single('image'), function(req, res) {
+app.post('/updateProfilePic', function(req, res) {
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -677,7 +658,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.file)){                       //Check if image is valid
+    if(!checkData(req.body.image)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
@@ -688,8 +669,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
-    connection.query( "UPDATE userinfotable SET profile_picture = CAST ('" +
-    req.file + "' AS BINARY) WHERE device_address = " +
+    connection.query( "UPDATE userinfotable SET profile_picture = " +
+    req.body.image + " WHERE device_address = " +
     req.headers.deviceaddress + ";", function (error, results, fields) {
       if(error) {
         res.send({
@@ -700,7 +681,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.send({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          //"image" : req.file,
           "results" : results
         });
       }
@@ -711,7 +691,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     res.send({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
-      "image" : imageBuffer,
       "reason" : e
     });
   }
