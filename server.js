@@ -7,7 +7,7 @@ const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
 
-//let upload  = multer({ storage: multer.memoryStorage() });
+let upload  = multer({ storage: multer.memoryStorage() });
 //var upload = multer().single('image')
 
 app.use(bodyParser.json());  //Read it in as JSON
@@ -241,7 +241,7 @@ app.get('/selectAll', function(request, response) {
         });
       }
       else {
-        response.send({
+        response.json({
           table_select_status: "Successful",
           "results" : results
         });
@@ -647,7 +647,7 @@ NOTES:      Recives an API Post request, updates a users
             app.post('/updateProfilePic', upload.single('image'), function(req, res) {
               try{
 ****************************************************************/
-app.post('/updateProfilePic', function(req, res) {
+app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -665,13 +665,25 @@ app.post('/updateProfilePic', function(req, res) {
 
     var file = fs.createReadStream(req.file);
     file.setEncoding('binary');
+
+    var fileString = ''
+    stream.on(file, function(buffer) {
+      var part = buffer.read().toString();
+      fileString += part;
+      console.log('stream data ' + part);
+    });
+
+
+    stream.on('end',function(){
+      console.log('final output ' + string);
+    });
     //var imageBuffer = new Buffer(req.file, "base64")
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE userinfotable SET profile_picture = " +
-    file + " WHERE device_address = " +
+    fileString + " WHERE device_address = " +
     req.headers.deviceaddress + ";", function (error, results, fields) {
       if(error) {
         res.send({
