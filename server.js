@@ -658,7 +658,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.body.image)){                       //Check if image is valid
+    if(!checkData(req.file)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
