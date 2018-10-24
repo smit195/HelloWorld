@@ -663,7 +663,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "image = null";                         //If any error throw it
     }
 
-    var file = fs.createReadStream(req.file);
+    var file = fs.createReadStream(req.file.Buffer);
     file.setEncoding('binary');
 /*
     var fileString = ''
