@@ -14,12 +14,23 @@ app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
 
 //creating connection object
+/*
 var connection = mysql.createConnection({
   host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
   port     : process.env.RDS_PORT,
   database : process.env.RDS_DBNAME,
+  multipleStatements: true
+});
+*/
+
+var connection = mysql.createConnection({
+  host     : 'valkyriedb.c0qmyd0kuuub.us-east-2.rds.amazonaws.com',
+  user     : 'valkyrieadmin',
+  password : 'password',
+  port     : '3306',
+  database : 'valkyriePrimaryDB',
   multipleStatements: true
 });
 
@@ -366,7 +377,6 @@ app.get('/checkIn', function(req, res) {
   }
 });
 
-
 /****************************************************************
 
 FUNCTION:   GET: Check out of local area
@@ -665,7 +675,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //var file = fs.createReadStream(req.file.Buffer);
     //file.setEncoding('binary');
-    var fileBuffer = new Buffer.from(req.file, 'binary')
+    //var fileBuffer = new Buffer.from(req.file, 'binary')
+    var fileBuffer = fs.readFile(req.file.buffer, function(err, buffer){})
 /*
     var fileString = ''
     stream.on(file, function(buffer) {
