@@ -187,7 +187,7 @@ NOTES:      Allows someone to send a query statement through
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-
+/*
 app.get('/manual', function(req, res) {
   try{
 
@@ -219,7 +219,7 @@ app.get('/manual', function(req, res) {
     });
   }
 });
-
+*/
 /****************************************************************
 
 FUNCTION:   GET: SELECT all from table
@@ -552,8 +552,8 @@ app.post('/updateTeam', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET team = '" +
-    req.body.team + "' WHERE device_address = " +
-    req.headers.deviceaddress + ";", function (error, results, fields) {
+    req.body.team + "' WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
           team_update_status: "Failed: " + error //display error upon UPDATE failure
@@ -608,8 +608,8 @@ app.post('/updateSkills', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( 'UPDATE userinfotable SET user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY (' +
-    req.body.skills + ") ) WHERE device_address = " +
-    req.headers.deviceaddress + ";", function (error, results, fields) {
+    req.body.skills + ") ) WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
           skill_update_status: "Failed: " + error //display error upon UPDATE failure
@@ -684,8 +684,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE userinfotable SET profile_picture = " +
-    file + " WHERE device_address = " +
-    req.headers.deviceaddress + ";", function (error, results, fields) {
+    file + " WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
           image_update_status: "Failed: " + error //display error upon UPDATE failure
@@ -741,8 +741,8 @@ app.post('/updateAvailability', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET availability = " +
-    req.body.availability + " WHERE device_address = " +
-    req.headers.deviceaddress + ";", function (error, results, fields) {
+    req.body.availability + " WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
           availability_update_status: "Failed: " + error //display error upon UPDATE failure
