@@ -676,7 +676,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //var file = fs.createReadStream(req.file.Buffer);
     //file.setEncoding('binary');
     //var fileBuffer = new Buffer.from(req.file, 'binary')
-    var fileBuffer = fs.readFile(req.file.buffer, function(err, buffer){})
+    //var fileBuffer = fs.readFile(req.file.buffer, function(err, buffer){})
 /*
     var fileString = ''
     stream.on(file, function(buffer) {
@@ -695,8 +695,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
-    connection.query( "UPDATE userinfotable SET profile_picture = " +
-    fileBuffer + " WHERE device_address = '" +
+    connection.query( "UPDATE userinfotable SET profile_picture = CAST(" +
+    req.file + " AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
@@ -704,7 +704,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         });
       }
       else {
-        res.send({
+        res.json({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
           "results" : results
