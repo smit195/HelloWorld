@@ -270,7 +270,7 @@ app.get('/selectAll', function(request, response) {
 
 /****************************************************************
 
-FUNCTION:   GET: SELECT data from /UserInfo/
+FUNCTION:   GET: SELECT data from /userInfo/
 
 ARGUMENTS:  Request on the API stream
 
@@ -370,7 +370,7 @@ app.get('/checkIn', function(req, res) {
       }
     });
   } catch(e) {
-    res.send({  //Send the error back to the app as JSON
+    res.json({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
       "reason" : e
     });
@@ -409,7 +409,7 @@ app.get('/checkOut', function(req, res) {
       "device_address" : req.headers.deviceaddress
     });
   }catch(e) {
-    res.send({  //Send the error back to the app as JSON
+    res.json({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
       "reason" : e
     });
@@ -450,7 +450,7 @@ app.get('/getCurrent', function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "fail",
       "reason" : e
     });
@@ -459,7 +459,7 @@ app.get('/getCurrent', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   POST: INSERT data from /firstTimeRegistration
+FUNCTION:   POST: INSERT data from /firstTimeRegistration/
 
 ARGUMENTS:  Request on the API stream
 
@@ -580,7 +580,7 @@ app.post('/updateTeam', function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "reason" : e
     });
@@ -589,14 +589,14 @@ app.post('/updateTeam', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   POST: UPDATE team number from /updateTeamNumber/
+FUNCTION:   POST: UPDATE skills from /updateSkills/
 
 ARGUMENTS:  Request on the API stream
 
 RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a persons
-            team number
+            skills
 ****************************************************************/
 app.post('/updateSkills', function(req, res) {
   try{
@@ -636,7 +636,7 @@ app.post('/updateSkills', function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error
 
-    res.send({  //Send the error back to the app as JSON
+    res.json({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
       "reason" : e
     });
@@ -653,9 +653,6 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
-
-            app.post('/updateProfilePic', upload.single('image'), function(req, res) {
-              try{
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
@@ -672,25 +669,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
-
-    //var file = fs.createReadStream(req.file.Buffer);
-    //file.setEncoding('binary');
-    //var fileBuffer = new Buffer.from(req.file, 'binary')
-    //var fileBuffer = fs.readFile(req.file.buffer, function(err, buffer){})
-/*
-    var fileString = ''
-    stream.on(file, function(buffer) {
-      var part = buffer.read().toString();
-      fileString += part;
-      console.log('stream data ' + part);
-    });
-
-
-    stream.on('end',function(){
-      console.log('final output ' + string);
-    });
-    //var imageBuffer = new Buffer(req.file, "base64")
-*/
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
@@ -714,7 +692,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
       "reason" : e
@@ -771,7 +749,7 @@ app.post('/updateAvailability', function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "reason" : e
     });
