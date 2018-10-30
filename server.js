@@ -261,7 +261,7 @@ app.get('/selectAll', function(request, response) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "reason" : e
     });
@@ -309,7 +309,7 @@ app.get('/userInfo', function(req, res) {
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
 
-    res.send({  //Send the error back to the app as JSON
+    res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "reason" : e
     });
