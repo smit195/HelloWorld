@@ -674,8 +674,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //packages the results into a JSON array, sends this package to front end
     var imageBuffer = Buffer.from(req.file.buffer)
 
-    connection.query( "UPDATE userinfotable SET profile_picture = CAST(" +
-    imageBuffer + " AS BINARY) WHERE device_address = '" +
+    connection.query( "UPDATE userinfotable SET profile_picture = CAST(" + '"'
+    imageBuffer + '"' + " AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
