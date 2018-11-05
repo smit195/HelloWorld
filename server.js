@@ -676,7 +676,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST(" + '"'
     imageBuffer + '"' + " AS BINARY) WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
+    req.headers.deviceaddress + "';", function (error, results, fields) ){
       if(error) {
         res.send({
           image_update_status: "Failed: " + error //display error upon UPDATE failure
