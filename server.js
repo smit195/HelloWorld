@@ -672,7 +672,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
-    var imageBuffer = Buffer.from(req.file.buffer)
+    //var imageBuffer = Buffer.from(req.file.buffer)
     // Initialize stream
     var myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
       frequency: 10,      // in milliseconds.
@@ -680,7 +680,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
 
     // With a buffer
-    myReadableStreamBuffer.put(imageBuffer);
+    myReadableStreamBuffer.put(req.file.buffer);
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST(" +
     myReadableStreamBuffer + " AS BINARY) WHERE device_address = '" +
