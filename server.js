@@ -696,7 +696,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.json({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          "image" : req.file
+          "image" : req.file,
           "results" : results
         });
       }
