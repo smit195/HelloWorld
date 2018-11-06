@@ -665,7 +665,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.file.buffer.data)){                       //Check if image is valid
+    if(!checkData(req.file)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
@@ -685,7 +685,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //myReadableStreamBuffer.put(req.file.buffer);
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST('" +
-    req.file.buffer.data + "' AS BINARY) WHERE device_address = '" +
+    req.file + "' AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
