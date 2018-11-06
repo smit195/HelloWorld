@@ -685,8 +685,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     // With a buffer
     //myReadableStreamBuffer.put(req.file.buffer);
 
-    connection.query( "UPDATE userinfotable SET profile_picture = '" +
-    imageBuffer.toString("binary") + "' WHERE device_address = '" +
+    connection.query( "UPDATE userinfotable SET profile_picture = load_file(" +
+    req.file + ") WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
@@ -697,7 +697,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.json({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          "image buffer" : imageBuffer,
+          //"image buffer" : imageBuffer,
           //"test data" : imageData.data,
           "results" : results
         });
