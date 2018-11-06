@@ -675,12 +675,19 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //var imageBuffer = Buffer.from(req.file.buffer)
     try{
       var imageData = JSON.parse(req.file)
-    } catch (SyntaxError error) {
-      res.send({
-        "JSON Parse Object" : error
-      })
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        res.send({
+          "SyntaxError" : error
+        })
+      }
+      else {
+        res.send({
+          "Unknown Error" : error
+        })
+      }
     }
-    
+
     // Initialize stream
     /*
     var myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
