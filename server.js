@@ -686,7 +686,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //myReadableStreamBuffer.put(req.file.buffer);
 
     connection.query( "UPDATE userinfotable SET profile_picture = CAST('" +
-    req.file + "' AS BINARY) WHERE device_address = '" +
+    imageBuffer.toString("binary") + "' AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
