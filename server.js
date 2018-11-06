@@ -699,7 +699,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
           "image" : imageData,
-          "test data" : imageData.data,
+          //"test data" : imageData.data,
           "results" : results
         });
       }
@@ -711,7 +711,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
       "image" : imageData,
-      "test data" : imageData.data,
+      //"test data" : imageData.data,
       "reason" : e
     });
   }
