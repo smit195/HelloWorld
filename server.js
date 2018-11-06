@@ -672,7 +672,9 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
-    var imageBuffer = Buffer.from(req.file.buffer)
+    //var imageBuffer = Buffer.from(req.file.buffer)
+    var imageData = JSON.parse(req.file)
+
     // Initialize stream
     /*
     var myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
@@ -696,8 +698,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.json({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          "image" : req.file,
-          "image buffer" : imageBuffer,
+          "image" : imageData,
+          "test data" : imageData.data,
           "results" : results
         });
       }
