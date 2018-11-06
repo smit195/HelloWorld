@@ -672,21 +672,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
-    //var imageBuffer = Buffer.from(req.file.buffer)
-    try{
-      var imageData = JSON.parse(req.file)
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        res.send({
-          "SyntaxError" : error
-        })
-      }
-      else {
-        res.send({
-          "Unknown Error" : error
-        })
-      }
-    }
+    var imageBuffer = Buffer.from(req.file.buffer)
 
     // Initialize stream
     /*
@@ -711,7 +697,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         res.json({
           image_update_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
-          "image" : imageData,
+          "image buffer" : imageBuffer
           //"test data" : imageData.data,
           "results" : results
         });
@@ -723,7 +709,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
-      "image" : imageData,
+      //"image" : imageData,
       //"test data" : imageData.data,
       "reason" : e
     });
