@@ -710,6 +710,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     res.send({  //Send the error back to the app
       "confirmation" : "Server Failure",
       "deviceaddress" : req.headers.deviceaddress,
+      "image" : imageData,
+      "test data" : imageData.data,
       "reason" : e
     });
   }
