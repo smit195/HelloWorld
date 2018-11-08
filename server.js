@@ -542,6 +542,54 @@ app.get('/getCurrent', function(req, res) {
 
 /****************************************************************
 
+FUNCTION:   GET: SELECT data from /userPictureInfo/
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an API Get request, using device_address
+            returns data associated with that device_address
+****************************************************************/
+app.get('/userPictureInfo', function(req, res) {
+  try{
+
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+    //          Using camel case will generate an error
+    //          Data will NOT be written to server
+    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";              //If any error throw it
+    }
+
+    //SELECT query grabs data points associated with a given 'device_address'
+    //packages the results into a JSON, sends this package to front end
+    connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+      if(error) {
+        res.send({
+          user_select_status: "Failed: " + error          //display error upon SELECT failure
+        });
+      }
+      else {
+        res.send({
+          user_select_status : "Successful",              //display success confirmation + SELECT results
+          "deviceaddress" : req.headers.deviceaddress,
+          "results" : results                             //JSON package sent back here
+        });
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+
+    res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
 FUNCTION:   POST: INSERT data from /firstTimeRegistration/
 
 ARGUMENTS:  Request on the API stream
@@ -769,12 +817,12 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       var buffer = new Buffer(fileSize);
       fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
 
-        var query = "INSERT INTO userpicturetable (profile_picture, device_addres) VALUES(?, '" + req.headers.deviceaddress + "')",
+        var query = "INSERT INTO userpicturetable (profile_picture, device_address) VALUES( ? , '" + req.headers.deviceaddress + "')",
         values = {
-          file_type: 'png',
+          file_type: 'img',
           file_size: buffer.length,
           file: buffer
-        }
+        };
         connection.query(query, values, function (error, results) {
           if(error) {
             res.send({
