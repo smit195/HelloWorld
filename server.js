@@ -206,7 +206,7 @@ NOTES:      Allows someone to send a query statement through
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-/*
+
 app.get('/manual', function(req, res) {
   try{
 
@@ -238,7 +238,7 @@ app.get('/manual', function(req, res) {
     });
   }
 });
-*/
+
 /****************************************************************
 
 FUNCTION:   GET: SELECT all from table
@@ -699,7 +699,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //myReadableStreamBuffer.put(req.file.buffer);
 
     connection.query( "UPDATE userinfotable SET profile_picture = " +
-    imageBuffer.toString('binary') + " WHERE device_address = '" +
+    imageBuffer.toString('utf8') + " WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
