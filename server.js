@@ -339,8 +339,7 @@ app.get('/checkIn', function(req, res) {
     }
 
     //SELECT query grabs data points associated with a given 'device_address'
-    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress +
-    "' MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress "';", function (error, results, fields) {
+    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "' MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress "';", function (error, results, fields) {
       if(error) {
         res.send({
           checkin_status: "Check in failed"           //send error
@@ -371,6 +370,7 @@ app.get('/checkIn', function(req, res) {
         });
       }
     });
+    
   } catch(e) {
     res.json({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
