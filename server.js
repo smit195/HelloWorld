@@ -253,7 +253,7 @@ NOTES:      This query statement requests the entire table and
 ****************************************************************/
 app.get('/selectAll', function(request, response) {
   try {
-    connection.query( 'SELECT * FROM userinfotable;', function (error, results, fields) {
+    connection.query( "SELECT * FROM userinfotable MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         response.send({
           table_select_status: "Failed: " + error
