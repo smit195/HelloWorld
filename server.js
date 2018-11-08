@@ -66,8 +66,80 @@ app.get('/create_userinfotable', function(request,response) {
     ' availability BOOLEAN not null,' +
     ' team VARCHAR(25) not null,' +
     ' user_skill_package JSON,' +
+    ' PRIMARY KEY (device_address));', function (error, results, fields) {
+      if(error) {
+        response.send({table_create_status: "Failed: " + error});
+      }
+      else {
+        response.send({table_create_status: "Successful"});
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+FUNCTION:   GET: CREATE Table for database
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    Returns a confirmation package
+
+NOTES:      This query statements creates our user picture table
+            if one does not already exists within the DB.
+            NOTE: Table schema represented here
+****************************************************************/
+app.get('/create_userpicturetable', function(request,response) {
+  try {
+    connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userpicturetable(' +
+    //table schema:
+    ' device_address VARCHAR(40),' +
     ' profile_picture LONGBLOB,' +
     ' PRIMARY KEY (device_address));', function (error, results, fields) {
+      if(error) {
+        response.send({table_create_status: "Failed: " + error});
+      }
+      else {
+        response.send({table_create_status: "Successful"});
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+
+    res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+FUNCTION:   GET: CREATE Table for database
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    Returns a confirmation package
+
+NOTES:      This query statements creates our user alert table
+            if one does not already exists within the DB.
+            NOTE: Table schema represented here
+****************************************************************/
+app.get('/create_useralerttable', function(request,response) {
+  try {
+    connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.useralerttable(' +
+    //table schema:
+    ' device_address_sender VARCHAR(40),' +
+    ' device_address_receiver VARCHAR(40),' +
+    ' time_of_request TIMESTAMP' +
+    ' PRIMARY KEY (device_address_requester, device_address_sender));', function (error, results, fields) {
       if(error) {
         response.send({table_create_status: "Failed: " + error});
       }
@@ -124,9 +196,9 @@ NOTES:      This query statement drops a new column from the
             to keep up with database demands. Disabled
             until a specific column must be dropped
 ****************************************************************/
-/*
+
 app.get('/dropColumn', function(request,response) {
-  connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable DROP COLUMN [COLUMN NAME]', function (error, results, fields) {
+  connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable DROP COLUMN profile_picture', function (error, results, fields) {
     if(error) {
       response.send({column_drop_status: "Failed: " + error});
     }
@@ -135,7 +207,7 @@ app.get('/dropColumn', function(request,response) {
     }
   });
 });
-*/
+
 
 /****************************************************************
 
@@ -206,7 +278,7 @@ NOTES:      Allows someone to send a query statement through
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-
+/*
 app.get('/manual', function(req, res) {
   try{
 
@@ -238,7 +310,7 @@ app.get('/manual', function(req, res) {
     });
   }
 });
-
+*/
 /****************************************************************
 
 FUNCTION:   GET: SELECT all from table
@@ -253,7 +325,7 @@ NOTES:      This query statement requests the entire table and
 ****************************************************************/
 app.get('/selectAll', function(request, response) {
   try {
-    connection.query( "SELECT * FROM userinfotable MINUS SELECT profile_picture FROM userinfotable;", function (error, results, fields) {
+    connection.query( "SELECT * FROM userinfotable GROUP BY last_name;", function (error, results, fields) {
       if(error) {
         response.send({
           table_select_status: "Failed: " + error
@@ -300,8 +372,7 @@ app.get('/userInfo', function(req, res) {
 
     //SELECT query grabs data points associated with a given 'device_address'
     //packages the results into a JSON, sends this package to front end
-    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress +
-    "' MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress + "';", function (error, results, fields) {
+    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
         res.send({
           user_select_status: "Failed: " + error          //display error upon SELECT failure
@@ -665,6 +736,9 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
+
+            //var imageBuffer = Buffer.from(req.file.buffer)
+            //var imageBufferJSON = imageBuffer.toJSON()
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
@@ -684,23 +758,58 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
-    var imageBuffer = Buffer.from(req.file.buffer)
-    var imageBufferJSON = imageBuffer.toJSON()
 
-    // Initialize stream
-    /*
-    var myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
-      frequency: 10,      // in milliseconds.
-      chunkSize: 262144     // in bytes.
+    // Open file stream
+    fs.open(req.file, 'r', function (status, fd) {
+      if (status) {
+        console.log(status.message);
+        return;
+      }
+      var fileSize = getFilesizeInBytes(req.file);
+      var buffer = new Buffer(fileSize);
+      fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
+
+        var query = "UPDATE userpicturetable SET profile_picture = ? WHERE device_addres = '" + req.headers.deviceaddress + ";",
+        values = {
+          file_type: 'img',
+          file_size: buffer.length,
+          file: buffer
+        }
+        connection.query(query, values, function (error, results) {
+          if(error) {
+            res.send({
+              image_update_status: "Failed: " + error //display error upon UPDATE failure
+            });
+          }
+          else {
+            res.json({
+              image_update_status : "Successful", //display success confirmation + UPDATE results
+              "deviceaddress" : req.headers.deviceaddress,
+              //"JSON buffer" : imageBufferJSON,
+              //"test data" : imageData.data,
+              "results" : results
+            });
+          }
+        });
+      });
     });
-    */
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error
 
-    // With a buffer
-    //myReadableStreamBuffer.put(req.file.buffer);
+    res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "deviceaddress" : req.headers.deviceaddress,
+      //"image" : imageData,
+      //"test data" : imageData.data,
+      "reason" : e
+    });
+  }
+});
 
+/*
     connection.query( 'UPDATE userinfotable SET profile_picture = "' +
     imageBufferJSON.data + '"' + " WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
+    req.headers.deviceaddress + "';", function (error, results) {
       if(error) {
         res.send({
           image_update_status: "Failed: " + error //display error upon UPDATE failure
@@ -728,7 +837,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
   }
 });
-
+*/
 /****************************************************************
 
 FUNCTION:   POST: UPDATE availability from /updateAvailability/
