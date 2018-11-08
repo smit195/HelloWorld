@@ -139,7 +139,7 @@ app.get('/create_useralerttable', function(request,response) {
     ' device_address_sender VARCHAR(40),' +
     ' device_address_receiver VARCHAR(40),' +
     ' time_of_request TIMESTAMP' +
-    ' PRIMARY KEY (device_address_requester, device_address_sender));', function (error, results, fields) {
+    ' PRIMARY KEY (device_address_sender, device_address_receiver));', function (error, results, fields) {
       if(error) {
         response.send({table_create_status: "Failed: " + error});
       }
@@ -196,7 +196,7 @@ NOTES:      This query statement drops a new column from the
             to keep up with database demands. Disabled
             until a specific column must be dropped
 ****************************************************************/
-
+/*
 app.get('/dropColumn', function(request,response) {
   connection.query( 'ALTER TABLE valkyriePrimaryDB.userinfotable DROP COLUMN profile_picture', function (error, results, fields) {
     if(error) {
@@ -207,7 +207,7 @@ app.get('/dropColumn', function(request,response) {
     }
   });
 });
-
+*/
 
 /****************************************************************
 
@@ -769,9 +769,9 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       var buffer = new Buffer(fileSize);
       fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
 
-        var query = "UPDATE userpicturetable SET profile_picture = ? WHERE device_addres = '" + req.headers.deviceaddress + ";",
+        var query = "INSERT INTO userpicturetable (profile_picture, device_addres) VALUES(?, '" + req.headers.deviceaddress + "')",
         values = {
-          file_type: 'img',
+          file_type: 'png',
           file_size: buffer.length,
           file: buffer
         }
