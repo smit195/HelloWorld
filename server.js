@@ -6,12 +6,16 @@ const formdata = require ('form-data');
 const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
+const request = require('request');
 
 let upload  = multer({ storage: multer.memoryStorage() });
 //var upload = multer().single('image')
 
 app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
+
+global.PROXY = 'http://' + process.env.USER + ':' + process.env.PASS + '@proxy.discoverfinancial.com:8080';
+global.AWS_URL = "http://team6-testserveapp.im8j6rkm83.us-east-2.elasticbeanstalk.com/"
 
 //creating connection object
 /*
@@ -24,15 +28,19 @@ var connection = mysql.createConnection({
   multipleStatements: true
 });
 */
-
-var connection = mysql.createConnection({
-  host     : 'valkyriedb.c0qmyd0kuuub.us-east-2.rds.amazonaws.com',
-  user     : 'valkyrieadmin',
-  password : 'password',
-  port     : '3306',
-  database : 'valkyriePrimaryDB',
-  multipleStatements: true
-});
+let connection;
+if(process.env.PORT) {
+  connection = mysql.createConnection({
+    host     : 'valkyriedb.c0qmyd0kuuub.us-east-2.rds.amazonaws.com',
+    user     : 'valkyrieadmin',
+    password : 'password',
+    port     : '3306',
+    database : 'valkyriePrimaryDB',
+    multipleStatements: true
+  });
+}
+else {
+}
 
 var currentUsers = [];
 
@@ -328,7 +336,7 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an GET Post request, updates a persons
             availability in the physical space
 
-            "' MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress 
+            "' MINUS SELECT profile_picture FROM userinfotable WHERE device_address = '"  + req.headers.deviceaddress
 ****************************************************************/
 app.get('/checkIn', function(req, res) {
   try{
