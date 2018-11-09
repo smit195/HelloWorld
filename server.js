@@ -784,9 +784,6 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
-
-            //var imageBuffer = Buffer.from(req.file.buffer)
-            //var imageBufferJSON = imageBuffer.toJSON()
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
@@ -806,7 +803,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
-
+/*
     // Open file stream
     fs.open(req.file, 'r', function (status, fd) {
       if (status) {
@@ -853,8 +850,10 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
   }
 });
+*/
+    var imageBuffer = Buffer.from(req.file.buffer)
+    var imageBufferJSON = imageBuffer.toJSON()
 
-/*
     connection.query( 'UPDATE userinfotable SET profile_picture = "' +
     imageBufferJSON.data + '"' + " WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results) {
@@ -885,7 +884,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
   }
 });
-*/
+
 /****************************************************************
 
 FUNCTION:   POST: UPDATE availability from /updateAvailability/
