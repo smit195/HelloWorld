@@ -817,7 +817,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       var buffer = new Buffer(fileSize);
       fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
 
-        var query = "INSERT INTO userpicturetable (profile_picture, device_address) VALUES( ? , '" + req.headers.deviceaddress + "')",
+        var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
         values = {
           file_type: 'img',
           file_size: buffer.length,
