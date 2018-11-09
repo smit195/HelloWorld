@@ -776,7 +776,7 @@ app.post('/updateSkills', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   POST: UPDATE profile picture from /updateprofilepic/
+FUNCTION:   POST: INSERT profile picture from /updateprofilepic/
 
 ARGUMENTS:  Request on the API stream
 
@@ -795,7 +795,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("deviceaddress = null");
       throw "deviceaddress = null";                 //If any error throw it
     }
-
     if(!checkData(req.file)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
@@ -803,6 +802,41 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
     //UPDATE query adds an image.png for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
+
+    var imageBuffer = Buffer.from(req.file.buffer)
+    var imageBufferJSON = imageBuffer.toJSON()
+
+    connection.query( 'INSERT INTO userpicturetable SET profile_picture = "' +
+    imageBufferJSON.data + '"' + " WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results) {
+      if(error) {
+        res.send({
+          image_update_status: "Failed: " + error //display error upon UPDATE failure
+        });
+      }
+      else {
+        res.json({
+          image_update_status : "Successful", //display success confirmation + UPDATE results
+          "deviceaddress" : req.headers.deviceaddress,
+          //"JSON buffer" : imageBufferJSON,
+          //"test data" : imageData.data,
+          "results" : results
+        });
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error
+
+    res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "deviceaddress" : req.headers.deviceaddress,
+      //"image" : imageData,
+      //"test data" : imageData.data,
+      "reason" : e
+    });
+  }
+});
+
 /*
     // Open file stream
     fs.open(req.file, 'r', function (status, fd) {
@@ -851,39 +885,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   }
 });
 */
-    var imageBuffer = Buffer.from(req.file.buffer)
-    var imageBufferJSON = imageBuffer.toJSON()
-
-    connection.query( 'UPDATE userinfotable SET profile_picture = "' +
-    imageBufferJSON.data + '"' + " WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results) {
-      if(error) {
-        res.send({
-          image_update_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.json({
-          image_update_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          //"JSON buffer" : imageBufferJSON,
-          //"test data" : imageData.data,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app
-      "confirmation" : "Server Failure",
-      "deviceaddress" : req.headers.deviceaddress,
-      //"image" : imageData,
-      //"test data" : imageData.data,
-      "reason" : e
-    });
-  }
-});
 
 /****************************************************************
 
