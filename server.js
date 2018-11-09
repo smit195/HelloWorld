@@ -638,7 +638,7 @@ app.post('/firstTimeRegistration', function(req, res) {
     //ON DUPLICATE KEY updates an existing users data based on the device_address
     ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
     "', last_name = '" + req.body.lastName +
-    "', availability = false" +
+    "', availability = true" +
     ", team = '" + req.body.team +
     "', " + 'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""));' , function (error, results, fields) {
       if(error) {
@@ -917,6 +917,66 @@ app.post('/updateAvailability', function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET availability = " +
+    req.body.availability + " WHERE device_address = '" +
+    req.headers.deviceaddress + "';", function (error, results, fields) {
+      if(error) {
+        res.send({
+          availability_update_status: "Failed: " + error //display error upon UPDATE failure
+        });
+      }
+      else {
+        res.send({
+          availability_update_status : "Successful", //display success confirmation + UPDATE results
+          "deviceaddress" : req.headers.deviceaddress,
+          "results" : results
+        });
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error
+
+    res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+FUNCTION:   POST: INSERT notification from /updateAvailability/
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an API Post request, updates a persons
+            availability
+****************************************************************/
+
+//WARNING: FINISH THIS API CALL
+app.post('/sendAlert', function(req, res) {
+
+
+  try{
+
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+    //          Using camel case will generate an error
+    //          Data will NOT be written to server
+    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";              //If any error throw it
+    }
+
+    if(!checkData(req.body.availability)){       //Check if availability is valid
+      console.log("availability = null");
+      throw "availability = null";               //If any error throw it
+    }
+
+    //UPDATE query changes data points associated with a given 'device_address'
+    //packages the results into a JSON array, sends this package to front end
+
+    connection.query( "INSERT valkyriePrimaryDB.userinfotable SET availability = " +
     req.body.availability + " WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results, fields) {
       if(error) {
