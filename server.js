@@ -813,7 +813,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
     values = {
       file_type: 'png',
-      file_size: imageBuffer.length,
+      //file_size: imageBuffer.length,
       file: imageBuffer
     };
 
