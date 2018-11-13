@@ -791,7 +791,7 @@ NOTES:      Recives an API Post request, updates a users
             req.headers.deviceaddress + "';"
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
-  try{
+  //try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
@@ -881,6 +881,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         });
       });
     });
+    /*
   } catch(e) {
     console.log("Invalid: " + e); //Print the error
 
@@ -891,7 +892,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       //"test data" : imageData.data,
       "reason" : e
     });
-  }
+    */
+  //}
 });
 
 
