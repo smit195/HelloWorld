@@ -804,7 +804,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
-
+/*
     //INSERT query adds an image for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
     var imageBuffer = Buffer.from(req.file.buffer)
@@ -820,12 +820,12 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     connection.query( query, values, function (error, results) {
       if(error) {
         res.send({
-          picture_update_status: "Failed: " + error //display error upon UPDATE failure
+          image_update_status: "Failed: " + error //display error upon UPDATE failure
         });
       }
       else {
         res.json({
-          picture_update_status: "Successful", //display success confirmation + UPDATE results
+          image_update_status: "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
           //"JSON buffer" : imageBufferJSON,
           //"test data" : imageData.data,
@@ -845,8 +845,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
   }
 });
+*/
 
-/*
     // Open file stream
     fs.open(req.file, 'r', function (status, fd) {
       if (status) {
@@ -893,7 +893,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     });
   }
 });
-*/
+
 
 /****************************************************************
 
