@@ -138,7 +138,7 @@ app.get('/create_useralerttable', function(request,response) {
     //table schema:
     ' device_address_sender VARCHAR(40),' +
     ' device_address_receiver VARCHAR(40),' +
-    ' time_of_request TIMESTAMP,' +
+    ' time_of_request TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;,' +
     ' PRIMARY KEY (device_address_sender, device_address_receiver));', function (error, results, fields) {
       if(error) {
         response.send({table_create_status: "Failed: " + error});
@@ -381,6 +381,54 @@ app.get('/userInfo', function(req, res) {
       else {
         res.send({
           user_select_status : "Successful",              //display success confirmation + SELECT results
+          "deviceaddress" : req.headers.deviceaddress,
+          "results" : results                             //JSON package sent back here
+        });
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+
+    res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+FUNCTION:   GET: SELECT data from /pictureInfo/
+
+ARGUMENTS:  Request on the API stream
+
+RETURNS:    API-Returns confirmation code
+
+NOTES:      Recives an API Get request, using device_address
+            returns picture associated with that device_address
+****************************************************************/
+app.get('/pictureInfo', function(req, res) {
+  try{
+
+    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+    //          Using camel case will generate an error
+    //          Data will NOT be written to server
+    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";              //If any error throw it
+    }
+
+    //SELECT query grabs data points associated with a given 'device_address'
+    //packages the results into a JSON, sends this package to front end
+    connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+      if(error) {
+        res.json({
+          picture_select_status: "Failed: " + error          //display error upon SELECT failure
+        });
+      }
+      else {
+        res.json({
+          picture_select_status : "Successful",              //display success confirmation + SELECT results
           "deviceaddress" : req.headers.deviceaddress,
           "results" : results                             //JSON package sent back here
         });
@@ -953,40 +1001,35 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an API Post request, updates a persons
             availability
 ****************************************************************/
-
-//WARNING: FINISH THIS API CALL
 app.post('/sendAlert', function(req, res) {
-
-
   try{
 
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
       console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
+      throw "deviceaddress = null";                 //If any error throw it
     }
 
-    if(!checkData(req.body.availability)){       //Check if availability is valid
+    if(!checkData(req.body.deviceaddress_receiver)){  //Check if availability is valid
       console.log("availability = null");
-      throw "availability = null";               //If any error throw it
+      throw "availability = null";                  //If any error throw it
     }
 
     //UPDATE query changes data points associated with a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
-    connection.query( "INSERT valkyriePrimaryDB.userinfotable SET availability = " +
-    req.body.availability + " WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
+    connection.query( "INSERT valkyriePrimaryDB.useralerttable SET (device_address_sender, device_address_receiver)  VALUES('" +
+    req.body.deviceaddress + "', '" + req.body.device_address_receiver + "');", function (error, results, fields) {
       if(error) {
         res.send({
-          availability_update_status: "Failed: " + error //display error upon UPDATE failure
+          alert_status: "Failed: " + error //display error upon UPDATE failure
         });
       }
       else {
         res.send({
-          availability_update_status : "Successful", //display success confirmation + UPDATE results
+          alert_status : "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
           "results" : results
         });
