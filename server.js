@@ -965,15 +965,15 @@ app.post('/sendAlert', function(req, res) {
     }
 
     if(!checkData(req.body.deviceaddress_receiver)){  //Check if availability is valid
-      console.log("availability = null");
-      throw "availability = null";                  //If any error throw it
+      console.log("deviceaddress_receiver = null");
+      throw "deviceaddress_receiver = null";                  //If any error throw it
     }
 
     //UPDATE query changes data points associated with a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
     connection.query( "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES('" +
-    req.body.deviceaddress + "', '" + req.body.device_address_receiver + "');", function (error, results, fields) {
+    req.headers.deviceaddress + "', '" + req.body.deviceaddress_receiver + "');", function (error, results, fields) {
       if(error) {
         res.send({
           alert_status: "Failed: " + error //display error upon UPDATE failure
