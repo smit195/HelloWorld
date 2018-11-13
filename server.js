@@ -590,54 +590,6 @@ app.get('/getCurrent', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   GET: SELECT data from /userPictureInfo/
-
-ARGUMENTS:  Request on the API stream
-
-RETURNS:    API-Returns confirmation code
-
-NOTES:      Recives an API Get request, using device_address
-            returns data associated with that device_address
-****************************************************************/
-app.get('/userPictureInfo', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-
-    //SELECT query grabs data points associated with a given 'device_address'
-    //packages the results into a JSON, sends this package to front end
-    connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          user_select_status: "Failed: " + error          //display error upon SELECT failure
-        });
-      }
-      else {
-        res.send({
-          user_select_status : "Successful",              //display success confirmation + SELECT results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results                             //JSON package sent back here
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
-
-    res.send({  //Send the error back to the app
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
-  }
-});
-
-/****************************************************************
-
 FUNCTION:   POST: INSERT data from /firstTimeRegistration/
 
 ARGUMENTS:  Request on the API stream
@@ -1020,7 +972,7 @@ app.post('/sendAlert', function(req, res) {
     //UPDATE query changes data points associated with a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
-    connection.query( "INSERT valkyriePrimaryDB.useralerttable SET (device_address_sender, device_address_receiver)  VALUES('" +
+    connection.query( "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES('" +
     req.body.deviceaddress + "', '" + req.body.device_address_receiver + "');", function (error, results, fields) {
       if(error) {
         res.send({
