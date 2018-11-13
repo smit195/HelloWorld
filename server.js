@@ -795,19 +795,19 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("deviceaddress = null");
       throw "deviceaddress = null";                 //If any error throw it
     }
-    if(!checkData(req.file)){                       //Check if image is valid
+    if(!checkData(req.file.buffer)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
 
-    //UPDATE query adds an image.png for a given 'device_address'
+    //INSERT query adds an image for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
     //var imageBuffer = Buffer.from(req.file.buffer)
     //var imageBufferJSON = imageBuffer.toJSON()
 
     connection.query( "INSERT INTO userpicturetable SET profile_picture = CAST(" +
-    req.file + " AS BINARY) WHERE device_address = '" +
+    req.file.buffer + " AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results) {
       if(error) {
         res.send({
