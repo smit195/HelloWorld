@@ -138,7 +138,8 @@ app.get('/create_useralerttable', function(request,response) {
     //table schema:
     ' device_address_sender VARCHAR(40),' +
     ' device_address_receiver VARCHAR(40),' +
-    ' time_of_request TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;,' +
+    //TIMESTAMP column should always auto-update while using this data definition
+    ' time_of_request TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
     ' PRIMARY KEY (device_address_sender, device_address_receiver));', function (error, results, fields) {
       if(error) {
         response.send({table_create_status: "Failed: " + error});
@@ -803,11 +804,11 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //INSERT query adds an image for a given 'device_address'
     //packages the results into a JSON array, sends this package to front end
 
-    //var imageBuffer = Buffer.from(req.file.buffer)
-    //var imageBufferJSON = imageBuffer.toJSON()
+    var imageBuffer = Buffer.from(req.file.buffer)
+    var imageBufferJSON = imageBuffer.toJSON()
 
     connection.query( "INSERT INTO userpicturetable SET profile_picture = CAST('" +
-    req.file.buffer + "' AS BINARY) WHERE device_address = '" +
+    imageBufferJSON.data + "' AS BINARY) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results) {
       if(error) {
         res.send({
