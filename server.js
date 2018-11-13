@@ -820,12 +820,12 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     connection.query( query, values, function (error, results) {
       if(error) {
         res.send({
-          "Failed: " + error //display error upon UPDATE failure
+          picture_update_status: "Failed: " + error //display error upon UPDATE failure
         });
       }
       else {
         res.json({
-          "Successful", //display success confirmation + UPDATE results
+          picture_update_status: "Successful", //display success confirmation + UPDATE results
           "deviceaddress" : req.headers.deviceaddress,
           //"JSON buffer" : imageBufferJSON,
           //"test data" : imageData.data,
