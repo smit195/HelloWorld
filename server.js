@@ -807,7 +807,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     var imageBufferJSON = imageBuffer.toJSON()
 
     connection.query( "INSERT INTO userpicturetable (profile_picture) VALUES( LOAD_FILE ('" +
-    imageBufferJSON.data + "')) WHERE device_address = '" +
+    req.file + "')) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results) {
       if(error) {
         res.send({
