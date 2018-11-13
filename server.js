@@ -848,7 +848,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 */
 
     // Open file stream
-    fs.open(req.file, 'r', function (status, fd) {
+    fs.open(req.file.buffer, 'r', function (status, fd) {
       if (status) {
         console.log(status.message);
         return;
