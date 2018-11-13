@@ -138,7 +138,7 @@ app.get('/create_useralerttable', function(request,response) {
     //table schema:
     ' device_address_sender VARCHAR(40),' +
     ' device_address_receiver VARCHAR(40),' +
-    ' time_of_request TIMESTAMP' +
+    ' time_of_request TIMESTAMP,' +
     ' PRIMARY KEY (device_address_sender, device_address_receiver));', function (error, results, fields) {
       if(error) {
         response.send({table_create_status: "Failed: " + error});
