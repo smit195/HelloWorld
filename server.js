@@ -784,6 +784,10 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
+
+            "INSERT INTO userpicturetable (profile_picture) VALUES( LOAD_FILE ('" +
+            req.file + "')) WHERE device_address = '" +
+            req.headers.deviceaddress + "';"
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   try{
@@ -804,11 +808,16 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     //packages the results into a JSON array, sends this package to front end
 
     var imageBuffer = Buffer.from(req.file.buffer)
-    var imageBufferJSON = imageBuffer.toJSON()
+    //var imageBufferJSON = imageBuffer.toJSON()
 
-    connection.query( "INSERT INTO userpicturetable (profile_picture) VALUES( LOAD_FILE ('" +
-    req.file + "')) WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results) {
+    var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
+    values = {
+      file_type: 'png',
+      file_size: imageBuffer.length,
+      file: imageBuffer
+    };
+
+    connection.query( query, values, function (error, results) {
       if(error) {
         res.send({
           image_update_status: "Failed: " + error //display error upon UPDATE failure
