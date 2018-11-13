@@ -806,8 +806,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     var imageBuffer = Buffer.from(req.file.buffer)
     var imageBufferJSON = imageBuffer.toJSON()
 
-    connection.query( 'INSERT INTO userpicturetable SET profile_picture = "' +
-    imageBufferJSON.data + '"' + " WHERE device_address = '" +
+    connection.query( "INSERT INTO userpicturetable (profile_picture) VALUES( LOAD_FILE ('" +
+    imageBufferJSON.data + "')) WHERE device_address = '" +
     req.headers.deviceaddress + "';", function (error, results) {
       if(error) {
         res.send({
@@ -944,14 +944,14 @@ app.post('/updateAvailability', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   POST: INSERT notification from /updateAvailability/
+FUNCTION:   POST: Creates a new Alert
 
 ARGUMENTS:  Request on the API stream
 
 RETURNS:    API-Returns confirmation code
 
-NOTES:      Recives an API Post request, updates a persons
-            availability
+NOTES:      Makes a new alert for a user using yours and their
+            UUID. It also sets the current time.
 ****************************************************************/
 app.post('/sendAlert', function(req, res) {
   try{
@@ -991,6 +991,63 @@ app.post('/sendAlert', function(req, res) {
     console.log("Invalid: " + e); //Print the error
 
     res.send({  //Send the error back to the app
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+ FUNCTION:   POST: Deletes an Alert
+
+ ARGUMENTS:  Request on the API stream
+
+ RETURNS:    API-Returns confirmation code
+
+ NOTES:      Makes a new alert for a user using yours and their
+            UUID. It also sets the current time.
+****************************************************************/
+app.post('/deleteAlert', function(req, res) {
+  try{
+    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";              //If any error throw it
+    }
+     if(!checkData(req.body.senderDeviceAddress)){       //Check if availability is valid
+      console.log("availability = null");
+      throw "availability = null";               //If any error throw it
+    }
+     //TODO: Make new alert
+   } catch(e) {
+    console.log("Invalid: " + e); //Print the error
+     res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+ /****************************************************************
+
+ FUNCTION:   POST: Deletes All Alert
+
+ ARGUMENTS:  Request on the API stream
+
+ RETURNS:    API-Returns confirmation code
+
+ NOTES:      Makes a new alert for a user using yours and their
+            UUID. It also sets the current time.
+****************************************************************/
+app.post('/deleteAllAlert', function(req, res) {
+  try{
+    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+      console.log("deviceaddress = null");
+      throw "deviceaddress = null";              //If any error throw it
+    }
+     //TODO: Make new alert
+   } catch(e) {
+    console.log("Invalid: " + e); //Print the error
+     res.send({  //Send the error back to the app as JSON
       "confirmation" : "Server Failure",
       "reason" : e
     });
