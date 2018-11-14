@@ -824,7 +824,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
           file_size: fileSize,
           file: imageBuffer
         };
-        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer + " , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
+        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer" , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
           if(error) {
             res.send({
               image_update_status: "Failed: " + error //display error upon UPDATE failure
