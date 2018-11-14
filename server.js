@@ -804,7 +804,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     }
 
 /*
-    check bottom of code for old code
+    check bottom for old code
 */
     let imageBuffer = req.file.buffer
 
@@ -824,15 +824,15 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
           file_size: fileSize,
           file: imageBuffer
         };
-        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer" , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
+        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer + " , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
           if(error) {
             res.send({
-              image_update_status: "Failed: " + error //display error upon UPDATE failure
+              image_update_status: "Failed: " + error //display error upon INSERT failure
             });
           }
           else {
             res.json({
-              image_update_status : "Successful", //display success confirmation + UPDATE results
+              image_update_status : "Successful", //display success confirmation + INSERT results
               "deviceaddress" : req.headers.deviceaddress,
               //"JSON buffer" : imageBufferJSON,
               //"test data" : imageData.data,
