@@ -791,8 +791,6 @@ NOTES:      Recives an API Post request, updates a users
             req.headers.deviceaddress + "';"
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
-  //try{
-
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
@@ -804,47 +802,9 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
+
 /*
-    //INSERT query adds an image for a given 'device_address'
-    //packages the results into a JSON array, sends this package to front end
-    var imageBuffer = Buffer.from(req.file.buffer)
-    //var imageBufferJSON = imageBuffer.toJSON()
-
-    var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
-    values = {
-      file_type: 'img',
-      file_size: imageBuffer.length,
-      file: imageBuffer
-    };
-
-    connection.query( query, values, function (error, results) {
-      if(error) {
-        res.send({
-          image_update_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.json({
-          image_update_status: "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          //"JSON buffer" : imageBufferJSON,
-          //"test data" : imageData.data,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app
-      "confirmation" : "Server Failure",
-      "deviceaddress" : req.headers.deviceaddress,
-      //"image" : imageData,
-      //"test data" : imageData.data,
-      "reason" : e
-    });
-  }
-});
+    check bottom of code for old code
 */
 
     // Open file stream
@@ -881,21 +841,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         });
       });
     });
-    /*
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app
-      "confirmation" : "Server Failure",
-      "deviceaddress" : req.headers.deviceaddress,
-      //"image" : imageData,
-      //"test data" : imageData.data,
-      "reason" : e
-    });
-    */
-  //}
 });
-
 
 /****************************************************************
 
@@ -1096,3 +1042,47 @@ function checkData(data) {
 
 app.listen(port);
 module.exports = app;
+
+//uploadProfilePic
+/*
+//INSERT query adds an image for a given 'device_address'
+//packages the results into a JSON array, sends this package to front end
+var imageBuffer = Buffer.from(req.file.buffer)
+//var imageBufferJSON = imageBuffer.toJSON()
+
+var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
+values = {
+  file_type: 'img',
+  file_size: imageBuffer.length,
+  file: imageBuffer
+};
+
+connection.query( query, values, function (error, results) {
+  if(error) {
+    res.send({
+      image_update_status: "Failed: " + error //display error upon UPDATE failure
+    });
+  }
+  else {
+    res.json({
+      image_update_status: "Successful", //display success confirmation + UPDATE results
+      "deviceaddress" : req.headers.deviceaddress,
+      //"JSON buffer" : imageBufferJSON,
+      //"test data" : imageData.data,
+      "results" : results
+    });
+  }
+});
+} catch(e) {
+console.log("Invalid: " + e); //Print the error
+
+res.send({  //Send the error back to the app
+  "confirmation" : "Server Failure",
+  "deviceaddress" : req.headers.deviceaddress,
+  //"image" : imageData,
+  //"test data" : imageData.data,
+  "reason" : e
+});
+}
+});
+*/
