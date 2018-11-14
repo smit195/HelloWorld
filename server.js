@@ -815,14 +815,14 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
         return;
       }
       var fileSize = getFilesizeInBytes(req.file);
-      var buffer = new Buffer(fileSize);
+      //var buffer = new Buffer(fileSize);
       fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
 
         var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
         values = {
           file_type: 'img',
-          file_size: buffer.length,
-          file: buffer
+          file_size: fileSize,
+          file: imageBuffer
         };
         connection.query(query, values, function (error, results) {
           if(error) {
