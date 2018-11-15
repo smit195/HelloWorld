@@ -568,13 +568,13 @@ app.get('/getCurrent', function(req, res) {
 
   var AlertCount = -1;
 
-  connection.query("SELECT COUNT(*) from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
+  connection.query("SELECT COUNT(*) AS Count from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
         AlertCount = "Failed: " + error //display error upon UPDATE failure
     }
     else {
       tempResults = JSON.parse(JSON.stringify( results[0] ));
-      AlertCount = tempResults;
+      AlertCount = tempResults.Count;
       //AlertCount = 12345;
     }
 
