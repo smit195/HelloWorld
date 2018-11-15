@@ -555,29 +555,46 @@ NOTES:      Recives an GET Post request, returns the array
             containing the users in proximity
 ****************************************************************/
 app.get('/getCurrent', function(req, res) {
-  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+  try {
+    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
     console.log("deviceaddress = null");
     throw "deviceaddress = null";                 //If any error throw it
-  }
-
-  var TEMPcurrentUsers = currentUsers;
-
-  try {
-    for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
-        TEMPcurrentUsers.splice(i, 1);  //Delete it
-      }
     }
 
-    res.send({
-      get_current_status: "Successful",
-      "results" : TEMPcurrentUsers
-    });
+  var AlertCount = -1;
+
+  connection.query("SELECT COUNT(*) AS Count from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+        AlertCount = "Failed: " + error //display error upon UPDATE failure
+    }
+    else {
+      tempResults = JSON.parse(JSON.stringify( results[0] ));
+      AlertCount = tempResults.Count;
+      //AlertCount = 12345;
+    }
+
+    var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));
+
+      for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
+        if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+          TEMPcurrentUsers.splice(i, 1);  //Delete it
+        }
+      }
+
+      res.send({
+        get_current_status: "Successful",
+        "results" : TEMPcurrentUsers,
+        "alertResults" : results,
+        "alertCount" : AlertCount
+      });
+  });
+
+
 
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
 
-    res.send({  //Send the error back to the app
+    res.send({  //Send the error back to the app as JSON
       "confirmation" : "fail",
       "reason" : e
     });
