@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const fs = require ('fs');
-const formdata = require ('form-data');
+//const formdata = require ('form-data');
 const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
@@ -28,9 +28,7 @@ var connection = mysql.createConnection({
   multipleStatements: true
 });
 */
-let connection;
-if(process.env.PORT) {
-  connection = mysql.createConnection({
+let connection = mysql.createConnection({
     host     : 'valkyriedb.c0qmyd0kuuub.us-east-2.rds.amazonaws.com',
     user     : 'valkyrieadmin',
     password : 'password',
@@ -38,11 +36,9 @@ if(process.env.PORT) {
     database : 'valkyriePrimaryDB',
     multipleStatements: true
   });
-}
-else {
-}
 
 var currentUsers = [];
+var imageBuffer = new Buffer(1)
 
 /****************************************************************
 
@@ -409,8 +405,6 @@ NOTES:      Recives an API Get request, using device_address
             returns picture associated with that device_address
 ****************************************************************/
 app.get('/pictureInfo', function(req, res) {
-  try{
-
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
     //          Using camel case will generate an error
     //          Data will NOT be written to server
@@ -419,6 +413,13 @@ app.get('/pictureInfo', function(req, res) {
       throw "deviceaddress = null";              //If any error throw it
     }
 
+    res.json({
+      picture_select_status : "Successful",              //display success confirmation + SELECT results
+      "deviceaddress" : req.headers.deviceaddress,
+      "results" : imageBuffer                             //JSON package sent back here
+    });
+
+/*
     //SELECT query grabs data points associated with a given 'device_address'
     //packages the results into a JSON, sends this package to front end
     connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
@@ -434,16 +435,10 @@ app.get('/pictureInfo', function(req, res) {
           "results" : results                             //JSON package sent back here
         });
       }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
+    }); // end connection.query()
+*/
 
-    res.send({  //Send the error back to the app
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
-  }
-});
+  });
 
 /****************************************************************
 
@@ -798,7 +793,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       console.log("deviceaddress = null");
       throw "deviceaddress = null";                 //If any error throw it
     }
-    if(!checkData(req.file)){                      //Check if image is valid
+    if(!checkData(req.file)){                       //Check if image is valid
       console.log("image = null");
       throw "image = null";                         //If any error throw it
     }
@@ -806,7 +801,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 /*
     check bottom for old code
 */
-    let imageBuffer = req.file.buffer
+
+    imageBuffer = Buffer.from(req.file.buffer)
 
     // Open file stream
     fs.open(imageBuffer, 'r', function (status, fd) {
@@ -817,14 +813,18 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       var fileSize = getFilesizeInBytes(req.file);
       //var buffer = new Buffer(fileSize);
       fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
+        // base-64 encode here, send back to browser
+        // set source of html image tag to base-64
 
+/*
         var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
         values = {
           file_type: 'img',
           file_size: fileSize,
           file: imageBuffer
         };
-        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer + " , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
+*/
+        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer.toString() + " , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
           if(error) {
             res.send({
               image_update_status: "Failed: " + error //display error upon INSERT failure
