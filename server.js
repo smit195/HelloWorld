@@ -566,7 +566,7 @@ app.get('/getCurrent', function(req, res) {
     throw "deviceaddress = null";                 //If any error throw it
   }
 
-  var AlertCount = 0;
+  var AlertCount = -1;
 
   connection.query("SELECT COUNT(*) from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
@@ -577,21 +577,23 @@ app.get('/getCurrent', function(req, res) {
       //AlertCount = tempResults.Count;
       AlertCount = 12345;
     }
+
+    var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));
+
+      for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
+        if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+          TEMPcurrentUsers.splice(i, 1);  //Delete it
+        }
+      }
+
+      res.send({
+        get_current_status: "Successful",
+        "results" : TEMPcurrentUsers,
+        "alertCount" : AlertCount
+      });
   });
 
-  var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));
 
-    for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
-        TEMPcurrentUsers.splice(i, 1);  //Delete it
-      }
-    }
-
-    res.send({
-      get_current_status: "Successful",
-      "results" : TEMPcurrentUsers,
-      "alertCount" : AlertCount
-    });
 
   } catch(e) {
     console.log("Invalid: " + e); //Print the error to console
