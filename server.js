@@ -574,8 +574,8 @@ app.get('/getCurrent', function(req, res) {
     }
     else {
       tempResults = JSON.parse(JSON.stringify( results ));
-      //AlertCount = tempResults.Count;
-      AlertCount = 12345;
+      AlertCount = tempResults.Count;
+      //AlertCount = 12345;
     }
 
     var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));
