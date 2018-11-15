@@ -438,7 +438,7 @@ app.get('/pictureInfo', function(req, res) {
     }); // end connection.query()
 */
 
-  });
+});
 
 /****************************************************************
 
@@ -841,7 +841,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
           file: imageBuffer
         };
 */
-        connection.query("INSERT INTO userpicturetable SET profile_picture = " + imageBuffer.toString() + " , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
+        connection.query("INSERT INTO userpicturetable SET profile_picture = BINARY(" + imageBuffer + ") , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
           if(error) {
             res.send({
               image_update_status: "Failed: " + error //display error upon INSERT failure
