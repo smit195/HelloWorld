@@ -564,7 +564,7 @@ app.get('/getCurrent', function(req, res) {
     if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
     console.log("deviceaddress = null");
     throw "deviceaddress = null";                 //If any error throw it
-  }
+    }
 
   var AlertCount = -1;
 
@@ -589,7 +589,7 @@ app.get('/getCurrent', function(req, res) {
       res.send({
         get_current_status: "Successful",
         "results" : TEMPcurrentUsers,
-        "alertCount" : AlertCount
+        "alertCount" : results
       });
   });
 
