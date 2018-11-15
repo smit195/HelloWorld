@@ -573,7 +573,7 @@ app.get('/getCurrent', function(req, res) {
         AlertCount = "Failed: " + error //display error upon UPDATE failure
     }
     else {
-      tempResults = JSON.parse(JSON.stringify( results ));
+      tempResults = JSON.parse(JSON.stringify( results[0] ));
       AlertCount = tempResults.Count;
       //AlertCount = 12345;
     }
@@ -589,7 +589,8 @@ app.get('/getCurrent', function(req, res) {
       res.send({
         get_current_status: "Successful",
         "results" : TEMPcurrentUsers,
-        "alertCount" : results
+        "alertResults" : results,
+        "alertCount" : AlertCount
       });
   });
 
