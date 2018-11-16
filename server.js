@@ -628,6 +628,12 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
   /*
   check bottom for old code
+  values = {
+    file_type: 'img',
+    file_size: imageBuffer.length,
+    file: imageBuffer
+  };
+
   */
 
   imageBuffer = Buffer.from(req.file.buffer)
@@ -637,7 +643,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
   var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" +
   req.headers.deviceaddress + "' ON DUPLICATE KEY UPDATE profile_picture = ?;"
-  var values =  imageBuffer
+  var values =  { imageBuffer, imageBuffer }
 
   connection.query(query, values, function (error, results) {
     if(error) {
