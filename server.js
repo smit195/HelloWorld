@@ -38,7 +38,7 @@ let connection = mysql.createConnection({
   });
 
 var currentUsers = [];
-var imageBuffer = new Buffer(1)
+//var imageBuffer = new Buffer(1)
 
 /****************************************************************
 
@@ -626,10 +626,11 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     throw "image = null";                         //If any error throw it
   }
 
-  imageBuffer = Buffer.from(req.file.buffer)
+  var imageBuffer = Buffer.from(req.file.buffer)
+  var deviceAddressString = req.headers.deviceaddress
 
   var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '?' ON DUPLICATE KEY UPDATE profile_picture = ? ;"
-  var values =  { imageBuffer, req.headers.deviceaddress, imageBuffer }
+  var values =  { imageBuffer, deviceAddressString, imageBuffer }
 
   connection.query(query, values, function (error, results) {
     if(error) {
@@ -640,7 +641,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     else {
       res.json({
         image_update_status : "Successful", //display success confirmation + INSERT results
-        "deviceaddress" : req.headers.deviceaddress,
+        //"deviceaddress" : req.headers.deviceaddress,
         "results" : results
       });
     }
