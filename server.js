@@ -630,7 +630,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   var deviceAddressString = req.headers.deviceaddress
 
   var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '?' ON DUPLICATE KEY UPDATE profile_picture = ? ;"
-  var values =  { imageBuffer, deviceAddressString, imageBuffer }
+  var values =  [ imageBuffer, deviceAddressString, imageBuffer ]
 
   connection.query(query, values, function (error, results) {
     if(error) {
