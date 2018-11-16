@@ -247,8 +247,8 @@ ARGUMENTS:  Request on the API stream
 
 RETURNS:    API-Returns confirmation code
 
-NOTES:      Recives an API Get request, using device_address
-            returns picture associated with that device_address
+NOTES:      Recives an API Get request, using deviceaddress
+            returns picture associated with that deviceaddress
 ****************************************************************/
 app.get('/pictureInfo', function(req, res) {
     // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -277,13 +277,10 @@ app.get('/pictureInfo', function(req, res) {
       else {
         res.json({
           picture_select_status : "Successful",              //display success confirmation + SELECT results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results                             //JSON package sent back here
+          "results" : results                               //JSON package sent back here
         });
       }
     }); // end connection.query()
-
-
 });
 
 /****************************************************************
@@ -615,10 +612,6 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Post request, updates a users
             profile picture
-
-            "INSERT INTO userpicturetable SET profile_picture = CAST('" +
-            imageBuffer + "' AS BINARY) WHERE device_address = '" +
-            req.headers.deviceaddress + "';"
 ****************************************************************/
 app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
@@ -642,7 +635,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
   //file stream code went here
 
-  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';"
+  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" +
+  req.headers.deviceaddress + "' ON DUPLICATE KEY UPDATE profile_picture = ?;"
   var values =  imageBuffer
 
   connection.query(query, values, function (error, results) {
@@ -655,8 +649,6 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       res.json({
         image_update_status : "Successful", //display success confirmation + INSERT results
         "deviceaddress" : req.headers.deviceaddress,
-        //"JSON buffer" : imageBufferJSON,
-        //"test data" : imageData.data,
         "results" : results
       });
     }
