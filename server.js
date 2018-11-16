@@ -626,24 +626,10 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
     throw "image = null";                         //If any error throw it
   }
 
-  /*
-  check bottom for old code
-  values = {
-    file_type: 'img',
-    file_size: imageBuffer.length,
-    file: imageBuffer
-  };
-
-  */
-
   imageBuffer = Buffer.from(req.file.buffer)
-  //var fileSize = getFilesizeInBytes(req.file.buffer);
 
-  //file stream code went here
-
-  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" +
-  req.headers.deviceaddress + "' ON DUPLICATE KEY UPDATE profile_picture = ?;"
-  var values =  { imageBuffer, imageBuffer }
+  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '?' ON DUPLICATE KEY UPDATE profile_picture = ? ;"
+  var values =  { imageBuffer, req.headers.deviceaddress, imageBuffer }
 
   connection.query(query, values, function (error, results) {
     if(error) {
