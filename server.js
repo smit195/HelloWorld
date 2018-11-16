@@ -258,14 +258,14 @@ app.get('/pictureInfo', function(req, res) {
       console.log("deviceaddress = null");
       throw "deviceaddress = null";              //If any error throw it
     }
-
+/*
     res.json({
       picture_select_status : "Successful",              //display success confirmation + SELECT results
       "deviceaddress" : req.headers.deviceaddress,
       "results" : imageBuffer                             //JSON package sent back here
     });
+*/
 
-/*
     //SELECT query grabs data points associated with a given 'device_address'
     //packages the results into a JSON, sends this package to front end
     connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
@@ -282,7 +282,7 @@ app.get('/pictureInfo', function(req, res) {
         });
       }
     }); // end connection.query()
-*/
+
 
 });
 
