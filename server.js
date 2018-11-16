@@ -39,32 +39,23 @@ NOTES:      This query statements creates our user info table
             NOTE: Table schema represented here
 ****************************************************************/
 app.get('/create_userinfotable', function(request,response) {
-  try {
-    connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable(' +
-    //table schema:
-    ' first_name VARCHAR(15) not null,' +
-    ' last_name VARCHAR(25) not null,' +
-    ' device_address VARCHAR(40),' +
-    ' availability BOOLEAN not null,' +
-    ' team VARCHAR(25) not null,' +
-    ' user_skill_package JSON,' +
-    ' profile_picture LONGBLOB,' +
-    ' PRIMARY KEY (device_address));', function (error, results, fields) {
-      if(error) {
-        response.send({table_create_status: "Failed: " + error});
-      }
-      else {
-        response.send({table_create_status: "Successful"});
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
-  }
+  connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable(' +
+  //table schema:
+  ' first_name VARCHAR(15) not null,' +
+  ' last_name VARCHAR(25) not null,' +
+  ' device_address VARCHAR(40),' +
+  ' availability BOOLEAN not null,' +
+  ' team VARCHAR(25) not null,' +
+  ' user_skill_package JSON,' +
+  ' profile_picture LONGBLOB,' +
+  ' PRIMARY KEY (device_address));', function (error, results, fields) {
+    if(error) {
+      response.send({table_create_status: "Failed: " + error});
+    }
+    else {
+      response.send({table_create_status: "Successful"});
+    }
+  });
 });
 
 /****************************************************************
@@ -80,28 +71,19 @@ NOTES:      This query statement requests the entire table and
             returns the results back as a JSON package.
 ****************************************************************/
 app.get('/selectAll', function(request, response) {
-  try {
-    connection.query( 'SELECT * FROM userinfotable;', function (error, results, fields) {
-      if(error) {
-        response.send({
-          table_select_status: "Failed: " + error
-        });
-      }
-      else {
-        response.json({
-          table_select_status: "Successful",
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
-  }
+  connection.query( 'SELECT * FROM userinfotable;', function (error, results, fields) {
+    if(error) {
+      response.send({
+        table_select_status: "Failed: " + error
+      });
+    }
+    else {
+      response.json({
+        table_select_status: "Successful",
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -116,40 +98,30 @@ NOTES:      Recives an API Get request, using device_address
             returns data associated with that device_address
 ****************************************************************/
 app.get('/userInfo', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-
-    //SELECT query grabs data points associated with a given 'device_address'
-    //packages the results into a JSON, sends this package to front end
-    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          user_select_status: "Failed: " + error          //display error upon SELECT failure
-        });
-      }
-      else {
-        res.send({
-          user_select_status : "Successful",              //display success confirmation + SELECT results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results                             //JSON package sent back here
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
   }
+
+  //SELECT query grabs data points associated with a given 'device_address'
+  //packages the results into a JSON, sends this package to front end
+  connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        user_select_status: "Failed: " + error          //display error upon SELECT failure
+      });
+    }
+    else {
+      res.send({
+        user_select_status : "Successful",              //display success confirmation + SELECT results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results                             //JSON package sent back here
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -162,38 +134,37 @@ RETURNS:    API-Returns confirmation code
 
 NOTES:      Recives an API Get request, using deviceaddress
             returns picture associated with that deviceaddress
+
+            res.json({
+              picture_select_status : "Successful",              //display success confirmation + SELECT results
+              "deviceaddress" : req.headers.deviceaddress,
+              "results" : imageBuffer                             //JSON package sent back here
+            });
 ****************************************************************/
 app.get('/pictureInfo', function(req, res) {
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-/*
-    res.json({
-      picture_select_status : "Successful",              //display success confirmation + SELECT results
-      "deviceaddress" : req.headers.deviceaddress,
-      "results" : imageBuffer                             //JSON package sent back here
-    });
-*/
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
+  }
 
-    //SELECT query grabs data points associated with a given 'device_address'
-    //packages the results into a JSON, sends this package to front end
-    connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.json({
-          picture_select_status: "Failed: " + error          //display error upon SELECT failure
-        });
-      }
-      else {
-        res.json({
-          picture_select_status : "Successful",              //display success confirmation + SELECT results
-          "results" : results                               //JSON package sent back here
-        });
-      }
-    }); // end connection.query()
+  //SELECT query grabs data points associated with a given 'device_address'
+  //packages the results into a JSON, sends this package to front end
+  connection.query( "SELECT * FROM userpicturetable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.json({
+        picture_select_status: "Failed: " + error          //display error upon SELECT failure
+      });
+    }
+    else {
+      res.json({
+        picture_select_status : "Successful",              //display success confirmation + SELECT results
+        "results" : results                               //JSON package sent back here
+      });
+    }
+  }); // end connection.query()
 });
 
 /****************************************************************
@@ -208,53 +179,46 @@ NOTES:      Recives an GET Post request, updates a persons
             availability in the physical space
 ****************************************************************/
 app.get('/checkIn', function(req, res) {
-  try{
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
+  }
+
+  //SELECT query grabs data points associated with a given 'device_address'
+  connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        checkin_status: "Check in failed"           //send error
+      });
+    }
+    else if(results.length == 0)
+    {
+      res.send({
+        checkin_status: "No device address in DB"   //send error
+      });
     }
 
-    //SELECT query grabs data points associated with a given 'device_address'
-    connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          checkin_status: "Check in failed"           //send error
-        });
-      }
-      else if(results.length == 0)
-      {
-        res.send({
-          checkin_status: "No device address in DB"   //send error
-        });
-      }
-
-      else {
-        for (var i=0; i<currentUsers.length; i++){                           //Look for deviceAddress in the array
-          if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
-            res.send({
-              user_select_status : "Successful",                             //display success confirmation + SELECT results
-              "device_address" : req.headers.deviceaddress
-            });
-            return;
-          }
+    else {
+      for (var i=0; i<currentUsers.length; i++){                           //Look for deviceAddress in the array
+        if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+          res.send({
+            user_select_status : "Successful",                             //display success confirmation + SELECT results
+            "device_address" : req.headers.deviceaddress
+          });
+          return;
         }
-
-        currentUsers.push(results[0]);
-        res.send({
-          user_select_status : "Successful",                         //display success confirmation + SELECT results
-          "device_address" : req.headers.deviceaddress
-        });
       }
-    });
-  } catch(e) {
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Failed",
-      "reason" : e
-    });
-  }
+
+      currentUsers.push(results[0]);
+      res.send({
+        user_select_status : "Successful",                         //display success confirmation + SELECT results
+        "device_address" : req.headers.deviceaddress
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -269,31 +233,24 @@ NOTES:      Recives an GET Post request, updates a persons
             availability in the physical space
 ****************************************************************/
 app.get('/checkOut', function(req, res) {
-  try{
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
-    }
-
-    for (var i=0; i<currentUsers.length; i++){  //Look for deviceAddress in the array
-      if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
-        currentUsers.splice(i, 1);  //Delete it
-      }
-    }
-
-    res.send({
-      checkout_status : "Successful",
-      "device_address" : req.headers.deviceaddress
-    });
-  }catch(e) {
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Failed",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
   }
+
+  for (var i=0; i<currentUsers.length; i++){  //Look for deviceAddress in the array
+    if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+      currentUsers.splice(i, 1);  //Delete it
+    }
+  }
+
+  res.send({
+    checkout_status : "Successful",
+    "device_address" : req.headers.deviceaddress
+  });
 });
 
 /****************************************************************
@@ -308,47 +265,37 @@ NOTES:      Recives an GET Post request, returns the array
             containing the users in proximity
 ****************************************************************/
 app.get('/getCurrent', function(req, res) {
-  try {
-    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
+  }
+
+  var AlertCount = -1;
+
+  //Get the current number of alerts for deviceaddrress
+  connection.query("SELECT COUNT(*) AS Count from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      AlertCount = "Failed: " + error //display error upon UPDATE failure
+    }
+    else {
+      tempResults = JSON.parse(JSON.stringify( results[0] )); //Parse the results and save the total number
+      AlertCount = tempResults.Count;
     }
 
-    var AlertCount = -1;
+    var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));  //Temp current user array
 
-    //Get the current number of alerts for deviceaddrress
-    connection.query("SELECT COUNT(*) AS Count from useralerttable WHERE device_address_receiver ='" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        AlertCount = "Failed: " + error //display error upon UPDATE failure
+    for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
+      if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+        TEMPcurrentUsers.splice(i, 1);  //Delete it
       }
-      else {
-        tempResults = JSON.parse(JSON.stringify( results[0] )); //Parse the results and save the total number
-        AlertCount = tempResults.Count;
-      }
+    }
 
-      var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));  //Temp current user array
-
-      for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-        if (TEMPcurrentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
-          TEMPcurrentUsers.splice(i, 1);  //Delete it
-        }
-      }
-
-      res.send({
-        get_current_status: "Successful",
-        "results" : TEMPcurrentUsers,
-        "alertCount" : AlertCount
-      });
+    res.send({
+      get_current_status: "Successful",
+      "results" : TEMPcurrentUsers,
+      "alertCount" : AlertCount
     });
-
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error to console
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
-      "reason" : e
-    });
-  }
+  });
 });
 
 /****************************************************************
@@ -363,32 +310,25 @@ NOTES:      Recives a GET request and returns all of the current
             alerts for the UUID.
 ****************************************************************/
 app.get('/checkAlert', function(req, res) {
-  try {
-    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
-    }
-
-    connection.query("SELECT userinfotable.first_name, userinfotable.last_name, userinfotable.device_address, userinfotable.team, useralerttable.time_of_request, useralerttable.time_of_request FROM userinfotable, useralerttable WHERE useralerttable.device_address_sender = userinfotable.device_address AND useralerttable.device_address_receiver = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          check_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.send({
-          check_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "fail",
-      "reason" : e
-    });
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
   }
+
+  connection.query("SELECT userinfotable.first_name, userinfotable.last_name, userinfotable.device_address, userinfotable.team, useralerttable.time_of_request, useralerttable.time_of_request FROM userinfotable, useralerttable WHERE useralerttable.device_address_sender = userinfotable.device_address AND useralerttable.device_address_receiver = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        check_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      res.send({
+        check_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -403,67 +343,59 @@ NOTES:      Recives an API post request, checks the data to see
             if it is present, then add it to the DB.
 ****************************************************************/
 app.post('/firstTimeRegistration', function(req, res) {
-  try {
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //        Using camel case will generate an error
-    //        Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";             //If any error, throw it
-    }
-    if(!checkData(req.body.firstName)){         //Check if the First Name is valid
-      console.log("firstName = null");
-      throw "firstName = null";
-    }
-    if(!checkData(req.body.lastName)){          //Check if the Last Name is valid
-      console.log("lastName = null");
-      throw "lastName = null";
-    }
-    if(!checkData(req.body.team)){              //Check if the team is valid
-      console.log("bad_team");
-      throw "team = null";
-    }
-
-    //INSERT query creates a new person in userinfotable
-    connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team, user_skill_package) VALUES ('" +
-    req.body.firstName + "', '" +
-    req.body.lastName + "', '" +
-    req.headers.deviceaddress + "', " +
-    //WARNING: availability defaults to TRUE
-    //despite the fact that the next line says "false"
-    "false, " + "'" +
-    req.body.team + "', " +
-    //defaults to three empty strings
-    'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
-    //ON DUPLICATE KEY updates an existing users data based on the device_address
-    ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
-    "', last_name = '" + req.body.lastName +
-    //WARNING: availability defaults to TRUE
-    //despite the fact that the next line says "false"
-    "', availability = false" +
-    ", team = '" + req.body.team +
-    "', " + 'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""));' , function (error, results, fields) {
-      if(error) {
-        res.send({
-          insert_status: "Failed: " + error //display error on INSERT failure
-        });
-      }
-      else {
-        updateArray(req.headers.deviceaddress);
-        res.send({
-          insert_status : "Successful", //display success confirmation + INSERT results
-          "deviceAddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    res.send({
-      "confirmation" : "Server Failure",
-      "reason" : e
-    })
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //        Using camel case will generate an error
+  //        Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";             //If any error, throw it
   }
+  if(!checkData(req.body.firstName)){         //Check if the First Name is valid
+    console.log("firstName = null");
+    throw "firstName = null";
+  }
+  if(!checkData(req.body.lastName)){          //Check if the Last Name is valid
+    console.log("lastName = null");
+    throw "lastName = null";
+  }
+  if(!checkData(req.body.team)){              //Check if the team is valid
+    console.log("bad_team");
+    throw "team = null";
+  }
+
+  //INSERT query creates a new person in userinfotable
+  connection.query( "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team, user_skill_package) VALUES ('" +
+  req.body.firstName + "', '" +
+  req.body.lastName + "', '" +
+  req.headers.deviceaddress + "', " +
+  //WARNING: availability defaults to TRUE
+  //despite the fact that the next line says "false"
+  "false, " + "'" +
+  req.body.team + "', " +
+  //defaults to three empty strings
+  'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
+  //ON DUPLICATE KEY updates an existing users data based on the device_address
+  ") ON DUPLICATE KEY UPDATE first_name = '" + req.body.firstName +
+  "', last_name = '" + req.body.lastName +
+  //WARNING: availability defaults to TRUE
+  //despite the fact that the next line says "false"
+  "', availability = false" +
+  ", team = '" + req.body.team +
+  "', " + 'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""));' , function (error, results, fields) {
+    if(error) {
+      res.send({
+        insert_status: "Failed: " + error //display error on INSERT failure
+      });
+    }
+    else {
+      updateArray(req.headers.deviceaddress);
+      res.send({
+        insert_status : "Successful", //display success confirmation + INSERT results
+        "deviceAddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -478,48 +410,38 @@ NOTES:      Recives an API Post request, updates a persons
             team number
 ****************************************************************/
 app.post('/updateTeam', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-    if(!checkData(req.body.team)){               //Check if team number is valid
-      console.log("team = null");
-      throw "team = null";                       //If any error throw it
-    }
-
-    //UPDATE query changes data points associated with a given 'device_address'
-    //packages the results into a JSON array, sends this package to front end
-
-    connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET team = '" +
-    req.body.team + "' WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          team_update_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        updateArray(req.headers.deviceaddress);
-        res.send({
-          team_update_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
   }
+  if(!checkData(req.body.team)){               //Check if team number is valid
+    console.log("team = null");
+    throw "team = null";                       //If any error throw it
+  }
+
+  //UPDATE query changes data points associated with a given 'device_address'
+  //packages the results into a JSON array, sends this package to front end
+
+  connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET team = '" +
+  req.body.team + "' WHERE device_address = '" +
+  req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        team_update_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      updateArray(req.headers.deviceaddress);
+      res.send({
+        team_update_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -534,48 +456,38 @@ NOTES:      Recives an API Post request, updates a persons
             team number
 ****************************************************************/
 app.post('/updateSkills', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";             //If any error throw it
-    }
-    if(!checkData(req.body.skills)){            //Check if package is valid
-      console.log("skills = null");
-      throw "skills = null";                    //If any error throw it
-    }
-
-    //UPDATE query changes data points associated with a given 'device_address'
-    //packages the results into a JSON array, sends this package to front end
-
-    connection.query( 'UPDATE userinfotable SET user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY (' +
-    req.body.skills + ") ) WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          skill_update_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        updateArray(req.headers.deviceaddress);
-        res.send({
-          skill_update_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){  //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";             //If any error throw it
   }
+  if(!checkData(req.body.skills)){            //Check if package is valid
+    console.log("skills = null");
+    throw "skills = null";                    //If any error throw it
+  }
+
+  //UPDATE query changes data points associated with a given 'device_address'
+  //packages the results into a JSON array, sends this package to front end
+
+  connection.query( 'UPDATE userinfotable SET user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY (' +
+  req.body.skills + ") ) WHERE device_address = '" +
+  req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        skill_update_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      updateArray(req.headers.deviceaddress);
+      res.send({
+        skill_update_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -604,7 +516,8 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
 
   var imageBuffer = Buffer.from(req.file.buffer)
 
-  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "' ON DUPLICATE KEY UPDATE profile_picture = ? ;"
+  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" +
+              req.headers.deviceaddress + "' ON DUPLICATE KEY UPDATE profile_picture = ? ;"
   var values =  [ imageBuffer, imageBuffer ]
 
   connection.query(query, values, function (error, results) {
@@ -635,48 +548,38 @@ NOTES:      Recives an API Post request, updates a persons
             availability
 ****************************************************************/
 app.post('/updateAvailability', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-    if(!checkData(req.body.availability)){       //Check if availability is valid
-      console.log("availability = null");
-      throw "availability = null";               //If any error throw it
-    }
-
-    //UPDATE query changes data points associated with a given 'device_address'
-    //packages the results into a JSON array, sends this package to front end
-
-    connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET availability = " +
-    req.body.availability + " WHERE device_address = '" +
-    req.headers.deviceaddress + "';", function (error, results, fields) {
-      if(error) {
-        res.send({
-          availability_update_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        updateArray(req.headers.deviceaddress);
-        res.send({
-          availability_update_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
   }
+  if(!checkData(req.body.availability)){       //Check if availability is valid
+    console.log("availability = null");
+    throw "availability = null";               //If any error throw it
+  }
+
+  //UPDATE query changes data points associated with a given 'device_address'
+  //packages the results into a JSON array, sends this package to front end
+
+  connection.query( "UPDATE valkyriePrimaryDB.userinfotable SET availability = " +
+  req.body.availability + " WHERE device_address = '" +
+  req.headers.deviceaddress + "';", function (error, results, fields) {
+    if(error) {
+      res.send({
+        availability_update_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      updateArray(req.headers.deviceaddress);
+      res.send({
+        availability_update_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -691,44 +594,34 @@ NOTES:      Makes a new alert for a user using yours and their
             UUID. It also sets the current time.
 ****************************************************************/
 app.post('/sendAlert', function(req, res) {
-  try{
-
-    // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
-    //          Using camel case will generate an error
-    //          Data will NOT be written to server
-    if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";                 //If any error throw it
-    }
-
-    if(!checkData(req.body.deviceaddress_receiver)){  //Check if availability is valid
-      console.log("deviceaddress_receiver = null");
-      throw "deviceaddress_receiver = null";                  //If any error throw it
-    }
-
-    connection.query( "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES('" +
-    req.headers.deviceaddress + "', '" + req.body.deviceaddress_receiver + "');", function (error, results, fields) {
-      if(error) {
-        res.send({
-          alert_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.send({
-          alert_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app
-      "alert_status" : "Server Failure",
-      "reason" : e
-    });
+  // WARNING: DO NOT CHANGE FORMAT OF 'deviceaddress'
+  //          Using camel case will generate an error
+  //          Data will NOT be written to server
+  if(!checkData(req.headers.deviceaddress)){      //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";                 //If any error throw it
   }
+
+  if(!checkData(req.body.deviceaddress_receiver)){  //Check if availability is valid
+    console.log("deviceaddress_receiver = null");
+    throw "deviceaddress_receiver = null";                  //If any error throw it
+  }
+
+  connection.query( "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES('" +
+  req.headers.deviceaddress + "', '" + req.body.deviceaddress_receiver + "');", function (error, results, fields) {
+    if(error) {
+      res.send({
+        alert_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      res.send({
+        alert_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -743,40 +636,31 @@ NOTES:      Makes a new alert for a user using yours and their
             UUID. It also sets the current time.
 ****************************************************************/
 app.post('/deleteAlert', function(req, res) {
-  try{
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-
-    if(!checkData(req.body.deviceaddress_sender)){       //Check if availability is valid
-      console.log("availability = null");
-      throw "deviceaddress_sender = null";               //If any error throw it
-    }
-
-    connection.query("DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like '" + req.headers.deviceaddress + "' AND device_address_sender like '" + req.body.deviceaddress_sender + "';",
-     function (error, results, fields) {
-      if(error) {
-        res.send({
-          alert_delete_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.send({
-          alert_delete_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app
-      "alert_delete_status" : "Server Failure",
-      "reason" : e
-    });
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
   }
+
+  if(!checkData(req.body.deviceaddress_sender)){       //Check if availability is valid
+    console.log("availability = null");
+    throw "deviceaddress_sender = null";               //If any error throw it
+  }
+
+  connection.query("DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like '" + req.headers.deviceaddress + "' AND device_address_sender like '" + req.body.deviceaddress_sender + "';",
+  function (error, results, fields) {
+    if(error) {
+      res.send({
+        alert_delete_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      res.send({
+        alert_delete_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -791,36 +675,26 @@ NOTES:      Makes a new alert for a user using yours and their
             UUID. It also sets the current time.
 ****************************************************************/
 app.post('/deleteAllAlert', function(req, res) {
-  try{
-    if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
-      console.log("deviceaddress = null");
-      throw "deviceaddress = null";              //If any error throw it
-    }
-
-    connection.query("DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like '" + req.headers.deviceaddress + "';",
-     function (error, results, fields) {
-      if(error) {
-        res.send({
-          delete_all_status: "Failed: " + error //display error upon UPDATE failure
-        });
-      }
-      else {
-        res.send({
-          delete_all_status : "Successful", //display success confirmation + UPDATE results
-          "deviceaddress" : req.headers.deviceaddress,
-          "results" : results
-        });
-      }
-    });
-
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
+  if(!checkData(req.headers.deviceaddress)){   //Check if device address is valid
+    console.log("deviceaddress = null");
+    throw "deviceaddress = null";              //If any error throw it
   }
+
+  connection.query("DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like '" + req.headers.deviceaddress + "';",
+  function (error, results, fields) {
+    if(error) {
+      res.send({
+        delete_all_status: "Failed: " + error //display error upon UPDATE failure
+      });
+    }
+    else {
+      res.send({
+        delete_all_status : "Successful", //display success confirmation + UPDATE results
+        "deviceaddress" : req.headers.deviceaddress,
+        "results" : results
+      });
+    }
+  });
 });
 
 /****************************************************************
@@ -1010,8 +884,6 @@ NOTES:      Allows someone to send a query statement through
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
 /*app.get('/manual', function(req, res) {
-  try{
-
     if(!checkData(req.headers.command)){    //Check if manual command is valid
       console.log("command = null");
       throw "command = null";               //If any error throw it
@@ -1031,14 +903,6 @@ NOTES:      Allows someone to send a query statement through
         });
       }
     });
-  } catch(e) {
-    console.log("Invalid: " + e); //Print the error
-
-    res.send({  //Send the error back to the app as JSON
-      "confirmation" : "Server Failure",
-      "reason" : e
-    });
-  }
 });
 */
 
