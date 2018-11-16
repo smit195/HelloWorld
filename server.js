@@ -638,45 +638,29 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   */
 
   imageBuffer = Buffer.from(req.file.buffer)
+  var fileSize = getFilesizeInBytes(req.file.buffer);
 
-  // Open file stream
-  fs.open(imageBuffer, 'r', function (status, fd) {
-    if (status) {
-      console.log(status.message);
-      return;
+  //file stream code went here
+
+  var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';"
+  var values =  imageBuffer
+
+  connection.query(query, values, function (error, results) {
+    if(error) {
+      res.send({
+        image_update_status: "Failed: " + error //display error upon INSERT failure
+      });
     }
-    var fileSize = getFilesizeInBytes(req.file);
-    //var buffer = new Buffer(fileSize);
-    fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
-      // base-64 encode here, send back to browser
-      // set source of html image tag to base-64
-
-/*
-      var query = "INSERT INTO userpicturetable SET profile_picture = ? , device_address = '" + req.headers.deviceaddress + "';",
-      values = {
-      file_type: 'img',
-      file_size: fileSize,
-      file: imageBuffer
-    };
-*/
-    connection.query("INSERT INTO userpicturetable SET profile_picture = BINARY(" + imageBuffer + ") , device_address = '" + req.headers.deviceaddress + "';", function (error, results) {
-      if(error) {
-        res.send({
-          image_update_status: "Failed: " + error //display error upon INSERT failure
-        });
-      }
-      else {
-        res.json({
-          image_update_status : "Successful", //display success confirmation + INSERT results
-          "deviceaddress" : req.headers.deviceaddress,
-          //"JSON buffer" : imageBufferJSON,
-          //"test data" : imageData.data,
-          "results" : results
-        });
-      }
-    });
-  });
-});
+    else {
+      res.json({
+        image_update_status : "Successful", //display success confirmation + INSERT results
+        "deviceaddress" : req.headers.deviceaddress,
+        //"JSON buffer" : imageBufferJSON,
+        //"test data" : imageData.data,
+        "results" : results
+      });
+    }
+  }); //end connection.query()
 });
 
 /****************************************************************
@@ -1054,4 +1038,19 @@ res.send({  //Send the error back to the app
 });
 }
 });
+*/
+
+
+/* FILE STREAM CODE ***************************
+// Open file stream
+fs.open(imageBuffer, 'r', function (status, fd) {
+if (status) {
+console.log(status.message);
+return;
+}
+var fileSize = getFilesizeInBytes(req.file);
+//var buffer = new Buffer(fileSize);
+fs.read(fd, buffer, 0, fileSize, 0, function (err, num) {
+// base-64 encode here, send back to browser
+// set source of html image tag to base-64
 */
