@@ -638,7 +638,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
   */
 
   imageBuffer = Buffer.from(req.file.buffer)
-  var fileSize = getFilesizeInBytes(req.file.buffer);
+  //var fileSize = getFilesizeInBytes(req.file.buffer);
 
   //file stream code went here
 
