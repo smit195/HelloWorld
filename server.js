@@ -108,7 +108,7 @@ app.get('/userInfo', function(req, res) {
 
   //SELECT query grabs data points associated with a given 'device_address'
   //packages the results into a JSON, sends this package to front end
-  connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable INNER JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+  connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
       res.send({
         user_select_status: "Failed: " + error          //display error upon SELECT failure
@@ -188,7 +188,7 @@ app.get('/checkIn', function(req, res) {
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
-  connection.query("SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable INNER JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+  connection.query("SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
       res.send({
         checkin_status: "Check in failed"           //send error
@@ -755,7 +755,7 @@ function updateArray(id) {
     if (currentUsers[i].device_address == id){  //If the device is found
       currentUsers.splice(i, 1);  //Delete it
                                   //and reload it
-      connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable INNER JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
+      connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
           currentUsers.push(results[0]);
       });
     }
