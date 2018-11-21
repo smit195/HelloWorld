@@ -527,6 +527,7 @@ app.post('/updateProfilePic', upload.single('image'), function(req, res) {
       });
     }
     else {
+      updateArray(req.headers.deviceaddress);
       res.json({
         image_update_status : "Successful", //display success confirmation + INSERT results
         "deviceaddress" : req.headers.deviceaddress,
