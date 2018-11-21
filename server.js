@@ -315,7 +315,7 @@ app.get('/checkAlert', function(req, res) {
     throw "deviceaddress = null";                 //If any error throw it
   }
 
-  connection.query("SELECT userinfotable.first_name, userinfotable.last_name, userinfotable.device_address, userinfotable.team, useralerttable.time_of_request, CONVERT_TZ(useralerttable.time_of_request,'GMT','-6:00'), userpicturetable.profile_picture AS time_of_request FROM useralerttable, userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE useralerttable.device_address_sender = userinfotable.device_address AND useralerttable.device_address_receiver = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+  connection.query("SELECT userinfotable.first_name, userinfotable.last_name, userinfotable.device_address, userinfotable.team, useralerttable.time_of_request, CONVERT_TZ(useralerttable.time_of_request,'GMT','-6:00') AS time_of_request, userpicturetable.profile_picture FROM useralerttable, userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE useralerttable.device_address_sender = userinfotable.device_address AND useralerttable.device_address_receiver = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
       res.send({
         check_status: "Failed: " + error //display error upon UPDATE failure
