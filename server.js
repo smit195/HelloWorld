@@ -188,7 +188,7 @@ app.get('/checkIn', function(req, res) {
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
-  connection.query( "SELECT * FROM userinfotable where device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
+  connection.query("SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable INNER JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + req.headers.deviceaddress + "';", function (error, results, fields) {
     if(error) {
       res.send({
         checkin_status: "Check in failed"           //send error
@@ -203,7 +203,7 @@ app.get('/checkIn', function(req, res) {
 
     else {
       for (var i=0; i<currentUsers.length; i++){                           //Look for deviceAddress in the array
-        if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is found
+        if (currentUsers[i].device_address == req.headers.deviceaddress){  //If the device is already in the DB, just send back Successful and not add it to the Array
           res.send({
             user_select_status : "Successful",                             //display success confirmation + SELECT results
             "device_address" : req.headers.deviceaddress
@@ -212,7 +212,7 @@ app.get('/checkIn', function(req, res) {
         }
       }
 
-      currentUsers.push(results[0]);
+      currentUsers.push(results[0]);                              //Add it to the Current users array
       res.send({
         user_select_status : "Successful",                         //display success confirmation + SELECT results
         "device_address" : req.headers.deviceaddress
