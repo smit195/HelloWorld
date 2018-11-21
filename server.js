@@ -755,7 +755,7 @@ function updateArray(id) {
     if (currentUsers[i].device_address == id){  //If the device is found
       currentUsers.splice(i, 1);  //Delete it
                                   //and reload it
-      connection.query( "SELECT * FROM userinfotable where device_address = '" + id + "';", function (error, results, fields) {
+      connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable INNER JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
           currentUsers.push(results[0]);
       });
     }
