@@ -213,6 +213,8 @@ app.get('/checkIn', function(req, res) {
       }
 
       currentUsers.push(results[0]);                              //Add it to the Current users array
+      currentUsers.sort(compare);
+
       res.send({
         user_select_status : "Successful",                         //display success confirmation + SELECT results
         "device_address" : req.headers.deviceaddress
@@ -761,7 +763,25 @@ function updateArray(id) {
       });
     }
   }
+
+  currentUsers.sort(compare);
 }
+
+function compare(a, b) {
+  // Use toUpperCase() to ignore character casing
+  const genreA = a.availability;
+  const genreB = b.availability;
+
+  if (a.availability < b.availability){
+    return -1;
+  } else if (a.availability > b.availability){
+    return 1;
+  } else if (a.availability = b.availability){
+    return 0;
+  }
+}
+
+
 
 /****************************************************************
 
