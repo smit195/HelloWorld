@@ -768,15 +768,11 @@ function updateArray(id) {
 }
 
 function compare(a, b) {
-  // Use toUpperCase() to ignore character casing
-  const genreA = a.availability;
-  const genreB = b.availability;
-
   if (a.availability < b.availability){
     return -1;
   } else if (a.availability > b.availability){
     return 1;
-  } else if (a.availability = b.availability){
+  } else if (a.availability == b.availability){
     return 0;
   }
 }
