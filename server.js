@@ -900,7 +900,7 @@ NOTES:      Allows someone to send a query statement through
 ****************************************************************/
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
-/*app.get('/manual', function(req, res) {
+app.get('/manual', function(req, res) {
     if(!checkData(req.headers.command)){    //Check if manual command is valid
       console.log("command = null");
       throw "command = null";               //If any error throw it
@@ -921,7 +921,7 @@ NOTES:      Allows someone to send a query statement through
       }
     });
 });
-*/
+
 
 app.listen(port);
 module.exports = app;
