@@ -14,6 +14,13 @@ let upload  = multer({ storage: multer.memoryStorage() });
 app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
+
 //creating connection object
 var connection = mysql.createConnection({
   host     : process.env.RDS_HOSTNAME,
