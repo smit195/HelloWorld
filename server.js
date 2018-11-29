@@ -294,8 +294,6 @@ app.get('/getCurrent', function(req, res) {
       }
     }
 
-    res.header(Access-Control-Allow-Origin, "*")
-
     res.send({
       get_current_status: "Successful",
       "results" : TEMPcurrentUsers,
