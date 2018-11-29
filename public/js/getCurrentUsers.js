@@ -3,7 +3,7 @@ function timeRefresh(){
 }
 
 
-function getCurrentUsrs(){
+function getCurrentUsers(){
   fetch('http://team6-testserveapp.im8j6rkm83.us-east-2.elasticbeanstalk.com/getCurrent', {
     method: 'GET',
     headers: {
