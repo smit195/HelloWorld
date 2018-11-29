@@ -7,6 +7,7 @@ const multer = require('multer');
 const port = process.env.PORT || 3000;
 const app = express();
 const schedule = require('node-schedule');
+var base64ArrayBuffer = require("base64-arraybuffer");
 
 let upload  = multer({ storage: multer.memoryStorage() });
 //var upload = multer().single('image')
@@ -307,7 +308,11 @@ app.get('/getCurrent22', function(req, res) {
     var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));  //Temp current user array
 
     for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      TEMPcurrentUsers[i].profile_picture = Buffer.from(TEMPcurrentUsers[i].profile_picture, 'base64')
+      if(TEMPcurrentUsers[i].profile_picture != null) {
+        var imageBase64 = base64ArrayBuffer.encode(TEMPcurrentUsers[i].profile_picture)
+        var imageUri = "data:image/png;base64," + imageBase64;
+        TEMPcurrentUsers[i].profile_picture = imageUri;
+      }
     }
 
     res.send({
