@@ -307,7 +307,7 @@ app.get('/getCurrent22', function(req, res) {
     var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));  //Temp current user array
 
     for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      TEMPcurrentUsers[i].profile_picture = Buffer.from(TEMPcurrentUsers[i].profile_picture, 'base64').toString('ascii')
+      TEMPcurrentUsers[i].profile_picture = Buffer.from(TEMPcurrentUsers[i].profile_picture, 'base64')
     }
 
     res.send({
