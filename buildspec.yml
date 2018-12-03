@@ -14,6 +14,7 @@ phases:
       - npm install multer
       - npm install request
       - npm install node-schedule
+      - npm install base64-arraybuffer
 
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
@@ -37,6 +38,7 @@ phases:
       - npm install multer
       - npm install request
       - npm install node-schedule
+      - npm install base64-arraybuffer
 
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
