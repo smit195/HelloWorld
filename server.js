@@ -60,6 +60,79 @@ app.get('/create_userinfotable', function(request,response) {
 
 /****************************************************************
 
+ FUNCTION:   GET: CREATE Table for database
+
+ ARGUMENTS:  Request on the API stream
+
+ RETURNS:    Returns a confirmation package
+
+ NOTES:      This query statements creates our user alert table
+            if one does not already exists within the DB.
+            NOTE: Table schema represented here
+****************************************************************/
+app.get('/create_useralerttable', function(request,response) {
+  try {
+    connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.useralerttable(' +
+    //table schema:
+    ' device_address_sender VARCHAR(40),' +
+    ' device_address_receiver VARCHAR(40),' +
+    //TIMESTAMP column should always auto-update while using this data definition
+    ' time_of_request TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    ' PRIMARY KEY (device_address_sender, device_address_receiver));', function (error, results, fields) {
+      if(error) {
+        response.send({table_create_status: "Failed: " + error});
+      }
+      else {
+        response.send({table_create_status: "Successful"});
+      }
+    });
+  } catch(e) {
+    console.log("Invalid: " + e); //Print the error to console
+     res.send({  //Send the error back to the app as JSON
+      "confirmation" : "Server Failure",
+      "reason" : e
+    });
+  }
+});
+
+/****************************************************************
+
+ FUNCTION:   GET: CREATE Table for database
+
+ ARGUMENTS:  Request on the API stream
+
+ RETURNS:    Returns a confirmation package
+ 
+ NOTES:      This query statements creates our user picture table
+            if one does not already exists within the DB.
+            NOTE: Table schema represented here
+****************************************************************/
+app.get('/create_userpicturetable', function(request,response) {
+  try {
+    connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userpicturetable(' +
+    //table schema:
+    ' device_address VARCHAR(40),' +
+    ' profile_picture LONGBLOB,' +
+    ' PRIMARY KEY (device_address));', function (error, results, fields) {
+      if(error) {
+         response.send({table_create_status: "Failed: " + error});
+       }
+       else {
+         response.send({table_create_status: "Successful"});
+       }
+     });
+   } catch(e) {
+     console.log("Invalid: " + e); //Print the error to console
+
+     res.send({  //Send the error back to the app as JSON
+       "confirmation" : "Server Failure",
+       "reason" : e
+     });
+   }
+ });
+
+/****************************************************************
+
 FUNCTION:   GET: SELECT all from userinfotable
 
 ARGUMENTS:  Request on the API stream
