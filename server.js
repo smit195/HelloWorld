@@ -51,6 +51,9 @@ app.get('/create_userinfotable', function(request,response) {
   ' team VARCHAR(25) not null,' +
   ' user_skill_package JSON,' +
   ' profile_picture LONGBLOB,' +
+  ' skill1_level VARCHAR(1) DEFAULT 0,' +
+  ' skill2_level VARCHAR(1) DEFAULT 0,' +
+  ' skill3_level VARCHAR(1) DEFAULT 0,' +
   ' PRIMARY KEY (device_address));', function (error, results, fields) {
     if(error) {
       response.send({table_create_status: "Failed: " + error});
@@ -105,7 +108,7 @@ app.get('/create_useralerttable', function(request,response) {
  ARGUMENTS:  Request on the API stream
 
  RETURNS:    Returns a confirmation package
- 
+
  NOTES:      This query statements creates our user picture table
             if one does not already exists within the DB.
             NOTE: Table schema represented here
