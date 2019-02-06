@@ -1022,13 +1022,23 @@ app.get('/manual', function(req, res) {
 */
 app.post('/manual', (req, res) => {
   var SQL = req.body.query;
+  
+  res.json({
+    host     : process.env.RDS_HOSTNAME,
+    user     : process.env.RDS_USERNAME,
+    password : process.env.RDS_PASSWORD,
+    port     : process.env.RDS_PORT,
+    database : process.env.RDS_DBNAME,
+    multipleStatements: true
+  })
+  /*
   connection.query(SQL, (err, results) => {
     if (err) {
       res.status(500).send({auth: false, message: "Internal server error: " + err})
       return;
     }
     res.status(200).send({results: results});
-  })
+  })*/
 })
 
 
