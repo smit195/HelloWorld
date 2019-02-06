@@ -998,12 +998,12 @@ NOTES:      Allows someone to send a query statement through
 // WARNING: This opens the door for MySQL injection, MASSIVE SECURITY RISK
 //          ALWAYS DISABLE WHEN NOT BEING USED.
 app.get('/manual', function(req, res) {
-    if(!checkData(req.headers.command)){    //Check if manual command is valid
+    if(!req.query.command){    //Check if manual command is valid
       console.log("command = null");
       throw "command = null";               //If any error throw it
     }
 
-    connection.query( req.headers.command + ";", function (error, results, fields) {
+    connection.query( req.query.command + ";", function (error, results, fields) {
       if(error) {
         res.send({
           command_status: "Failed " + error //display error upon manual command failure
