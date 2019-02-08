@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-var connection = require('../server');
+var connection = require('../connection');
+
 
 
 router.post('/feedback/createTable', (req, res) => {
