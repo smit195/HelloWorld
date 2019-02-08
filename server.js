@@ -16,6 +16,8 @@ app.use(bodyParser.json());  //Read it in as JSON
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static('public'));
+app.use(require("./routes/feedback"));
+//app.use(require("./routes/rooms"));
 
 //creating connection object
 var connection = mysql.createConnection({
@@ -545,7 +547,7 @@ app.post('/updateTeam', function(req, res) {
 
 /****************************************************************
 
-FUNCTION:   POST: UPDATE team number from /updateTeamNumber/
+FUNCTION:   POST: UPDATE skills from /updateTeamNumber/
 
 ARGUMENTS:  Request on the API stream
 
