@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 var connection = require('../connection');
 
-
-
 router.post('/feedback/createTable', (req, res) => {
 	/*
 	var sql = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.feedback(' +
@@ -14,10 +12,10 @@ router.post('/feedback/createTable', (req, res) => {
 						'timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)'
 	connection.query(sql, (error, results) => {
 		if(error) {
-			response.send({table_create_status: "Failed: " + error});
+			response.status(500).send({table_create_status: "Failed: " + error});
 		}
 		else {
-			response.send({table_create_status: "Successful"});
+			response.status(200).send({table_create_status: "Successful"});
 		}
 	})
 	*/
@@ -28,15 +26,15 @@ router.post('/feedback/createTable', (req, res) => {
 router.get('/feedback/received', (req, res) => {
 	/*
 	var receiver = req.body.deviceaddress;
-	
+
 	// Join device_address sender and receiver on firstname/lastname
-	var SQL = 'SELECT first_name, last_name, feedback, timestamp
+	var SQL = 'SELECT first_name, last_name, feedback, timestamp'
 	connection.query(SQL, (error, results) => {
 		if (error) {
-			response.send({feedback_received_status : 'Failed:' + error})
+			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
 		else {
-			response.send({feedback_received_status : 'Successful',
+			res.status(200).send({feedback_received_status : 'Successful',
 							results : results});
 		}
 	}
@@ -48,15 +46,15 @@ router.get('/feedback/received', (req, res) => {
 router.get('/feedback/given', (req, res) => {
 		/*
 	var receiver = req.body.deviceaddress;
-	
+
 	// Join device_address sender and receiver on firstname/lastname
 	var SQL = 'SELECT first_name, last_name, feedback, timestamp
 	connection.query(SQL, (error, results) => {
 		if (error) {
-			response.send({feedback_received_status : 'Failed:' + error})
+			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
 		else {
-			response.send({feedback_received_status : 'Successful',
+			res.status(200).send({feedback_received_status : 'Successful',
 							results : results});
 		}
 	}
@@ -64,6 +62,9 @@ router.get('/feedback/given', (req, res) => {
 	res.send("Given.");
 });
 
+router.post('/feedback/give', (req, res) => {
 
+	res.send("give")
+});
 
 module.exports = router;
