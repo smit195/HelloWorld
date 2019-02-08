@@ -9,7 +9,8 @@
     "supertest": "3.0.0"
   },
   "scripts": {
-    "start": "node app.js",
+    "install": "find ./node_modules/* -mtime +10950 -exec touch {} \\;",
+    "start": "node server.js",
     "test": "mocha --recursive tests --exit"
   },
   "dependencies": {
