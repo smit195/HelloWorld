@@ -4,6 +4,7 @@ phases:
   install:
     commands:
       # Install dependencies needed for running tests
+      - npm set unsafe-perm true
       - npm install
       - npm install body-parser
       - npm install mysql
