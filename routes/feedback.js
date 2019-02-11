@@ -10,6 +10,7 @@ router.post('/feedback/createTable', (req, res) => {
 						'device_address_sender VARCHAR(40), ' +
 						'device_address_receiver VARCHAR(40), ' +
 						'feedback VARCHAR(240), ' +
+						''
 						'timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ' +
 						'PRIMARY KEY (feedbackID), ' +
 						'FOREIGN KEY (device_address_sender) REFERENCES valkyriePrimaryDB.userinfotable(device_address), ' +
@@ -80,13 +81,17 @@ router.get('/feedback/given', (req, res) => {
 	res.send("Given.");
 });
 
-router.post('/feedback/insert', (req, res) => {
+router.post('/feedback/send', (req, res) => {
 	/*
 	let device_address_giver = req.body.device_address_giver;
 	let device_address_receiver = req.body.device_address_receiver;
 	let feedback = req.body.feedback;
+	let positive = req.body.positive;
 	if (!device_address_giver || !device_address_receiver || !feedback) {
 		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_giver, device_address_receiver, and feedback.'});
+	}
+	if (typeof positive === 'undefined' || query === null) {
+		
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
@@ -102,7 +107,7 @@ router.post('/feedback/insert', (req, res) => {
 		}
 	}
 	*/
-	res.send("insert")
+	res.send("send")
 });
 
 module.exports = router;
