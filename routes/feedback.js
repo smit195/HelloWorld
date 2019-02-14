@@ -17,10 +17,10 @@ router.post('/feedback/createTable', (req, res) => {
 						'FOREIGN KEY (device_address_receiver) REFERENCES valkyriePrimaryDB.userinfotable(device_address));';
 	connection.query(sql, (error, results) => {
 		if(error) {
-			response.status(500).send({table_create_status: "Failed: " + error});
+			res.status(500).send({table_create_status: "Failed: " + error});
 		}
 		else {
-			response.status(200).send({table_create_status: "Successful"});
+			res.status(200).send({table_create_status: "Successful"});
 		}
 	})
 });
