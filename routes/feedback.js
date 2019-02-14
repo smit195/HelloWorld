@@ -46,7 +46,7 @@ router.get('/feedback/received', (req, res) => {
 			res.status(200).send({feedback_received_status : 'Successful',
 							results : results});
 		}
-	}
+	});
 });
 
 
@@ -58,10 +58,10 @@ router.get('/feedback/given', (req, res) => {
 
 	// Join device_address sender and receiver on firstname/lastname
 	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp ' +
-			  'FROM valkyriePrimaryDB.userinfotable AS ui ' +
-			  'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
-			  'ON ui.device_address = f.device_address_receiver
-			  'WHERE ui.device_address = ?;';
+			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
+			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
+			  		'ON ui.device_address = f.device_address_receiver '
+			  		'WHERE ui.device_address = ?;';
 	connection.query(SQL, [device_address_giver], (error, results) => {
 		if (error) {
 			res.status(500).send({feedback_received_status : 'Failed:' + error})
@@ -70,7 +70,7 @@ router.get('/feedback/given', (req, res) => {
 			res.status(200).send({feedback_received_status : 'Successful',
 							results : results});
 		}
-	}
+	});
 });
 
 router.post('/feedback/send', (req, res) => {
@@ -96,7 +96,7 @@ router.post('/feedback/send', (req, res) => {
 			res.status(200).send({feedback_received_status : 'Successful',
 							results : results});
 		}
-	}
+	});
 });
 
 module.exports = router;
