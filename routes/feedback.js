@@ -51,8 +51,8 @@ router.get('/feedback/received', (req, res) => {
 
 
 router.get('/feedback/given', (req, res) => {
-	let device_address_giver = req.body.device_address;
-	if (!device_address_giver) {
+	let device_address_sender = req.body.device_address;
+	if (!device_address_sender) {
 		res.status(400).send({feedback_given_status : 'Failed: Missing device_address parameter'});
 	}
 
@@ -62,7 +62,7 @@ router.get('/feedback/given', (req, res) => {
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
 			  		'ON ui.device_address = f.device_address_receiver '
 			  		'WHERE ui.device_address = ?;';
-	connection.query(SQL, [device_address_giver], (error, results) => {
+	connection.query(SQL, [device_address_sender], (error, results) => {
 		if (error) {
 			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
@@ -74,21 +74,21 @@ router.get('/feedback/given', (req, res) => {
 });
 
 router.post('/feedback/send', (req, res) => {
-	let device_address_giver = req.body.device_address_giver;
+	let device_address_sender = req.body.device_address_sender;
 	let device_address_receiver = req.body.device_address_receiver;
 	let feedback = req.body.feedback;
 	let positive = req.body.positive;
-	if (!device_address_giver || !device_address_receiver || !feedback) {
-		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_giver, device_address_receiver, feedback, and positive.'});
+	if (!device_address_sender || !device_address_receiver || !feedback) {
+		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_sender, device_address_receiver, feedback, and positive.'});
 	}
 	if (typeof positive === 'undefined' || positive === null) {
 		res.status(400).send({feedback_insert_status: 'Failed: positive argument missing - must be a bool.'});
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
-	let SQL = 'INSERT INTO valkyriePrimaryDB.feedback (device_address_giver, device_address_receiver, feedback) ' +
+	let SQL = 'INSERT INTO valkyriePrimaryDB.feedback (device_address_sender, device_address_receiver, feedback) ' +
 			  		'VALUES ( ?, ?, ?);';
-	connection.query(SQL, [device_address_giver, device_address_receiver, feedback], (error, results) => {
+	connection.query(SQL, [device_address_sender, device_address_receiver, feedback], (error, results) => {
 		if (error) {
 			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
