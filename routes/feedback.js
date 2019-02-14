@@ -59,7 +59,7 @@ router.get('/feedback/given', (req, res) => {
 	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp ' +
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
-			  		'ON ui.device_address = f.device_address_receiver '
+			  		'ON ui.device_address = f.device_address_receiver ' +
 			  		'WHERE ui.device_address = ?;';
 	connection.query(SQL, [device_address_sender], (error, results) => {
 		if (error) {
