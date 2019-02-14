@@ -29,7 +29,7 @@ router.post('/feedback/createTable', (req, res) => {
 router.get('/feedback/received', (req, res) => {
 	let device_address_receiver = req.query.device_address;
 	if (!device_address_receiver) {
-		res.status(400).send({feedback_given_status : 'Failed: Missing device_address parameter'});
+		res.status(400).send({feedback_given_status : 'Failed: Missing device_address_receiver parameter'});
 	}
 
 	// Join device_address receiver and receiver on firstname/lastname
@@ -38,7 +38,7 @@ router.get('/feedback/received', (req, res) => {
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
 			  		'ON ui.device_address = f.device_address_sender ' +
 			  		'WHERE ui.device_address = ?;';
-	connection.query(SQL, [device_address_sender],(error, results) => {
+	connection.query(SQL, [device_address_receiver],(error, results) => {
 		if (error) {
 			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
@@ -51,7 +51,7 @@ router.get('/feedback/received', (req, res) => {
 
 
 router.get('/feedback/given', (req, res) => {
-	let device_address_sender = req.body.device_address;
+	let device_address_sender = req.query.device_address;
 	if (!device_address_sender) {
 		res.status(400).send({feedback_given_status : 'Failed: Missing device_address parameter'});
 	}
