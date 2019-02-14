@@ -79,9 +79,9 @@ router.post('/feedback/send', (req, res) => {
 	let feedback = req.body.feedback;
 	let positive = req.body.positive;
 	if (!device_address_giver || !device_address_receiver || !feedback) {
-		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_giver, device_address_receiver, and feedback.'});
+		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_giver, device_address_receiver, feedback, and positive.'});
 	}
-	if (typeof positive === 'undefined' || query === null) {
+	if (typeof positive === 'undefined' || positive === null) {
 		res.status(400).send({feedback_insert_status: 'Failed: positive argument missing - must be a bool.'});
 	}
 
