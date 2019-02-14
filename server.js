@@ -1001,6 +1001,7 @@ NOTES:      Allows someone to send a query statement through
 //          ALWAYS DISABLE WHEN NOT BEING USED.
 
 app.post('/manual', (req, res) => {
+  let SQL = req.body.SQL;
   connection.query(SQL, (err, results) => {
     if (err) {
       res.status(500).send({auth: false, message: "Internal server error: " + err})
