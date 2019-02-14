@@ -4,7 +4,6 @@ var connection = require('../connection');
 
 
 router.post('/feedback/createTable', (req, res) => {
-
 	let sql = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.feedback(' +
 						'feedbackID INT AUTO_INCREMENT, ' +
 						'device_address_sender VARCHAR(40) NOT NULL, ' +
