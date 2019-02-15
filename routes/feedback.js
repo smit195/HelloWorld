@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 var connection = require('../connection');
 
-
-router.post('/feedback/createTable', (req, res) => {
+router.post('/createTable', (req, res) => {
 	let sql = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.feedback(' +
 						'feedbackID INT AUTO_INCREMENT, ' +
 						'device_address_sender VARCHAR(40) NOT NULL, ' +
@@ -25,7 +24,7 @@ router.post('/feedback/createTable', (req, res) => {
 });
 
 
-router.get('/feedback/received', (req, res) => {
+router.get('/received', (req, res) => {
 	let device_address_receiver = req.query.device_address;
 	if (!device_address_receiver) {
 		res.status(400).send({feedback_given_status : 'Failed: Missing device_address_receiver parameter'});
@@ -49,7 +48,7 @@ router.get('/feedback/received', (req, res) => {
 });
 
 
-router.get('/feedback/given', (req, res) => {
+router.get('/given', (req, res) => {
 	let device_address_sender = req.query.device_address;
 	if (!device_address_sender) {
 		res.status(400).send({feedback_given_status : 'Failed: Missing device_address parameter'});
@@ -72,7 +71,7 @@ router.get('/feedback/given', (req, res) => {
 	});
 });
 
-router.post('/feedback/send', (req, res) => {
+router.post('/send', (req, res) => {
 	let device_address_sender = req.body.device_address_sender;
 	let device_address_receiver = req.body.device_address_receiver;
 	let feedback = req.body.feedback;

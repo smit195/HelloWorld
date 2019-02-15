@@ -46,7 +46,7 @@ router.get('/room/createTable', (req, res) => {
 		}
 	});
 	*/
-	res.send("Created.");
+	res.send("/room/createTable has been disabled.");
 });
 
 
@@ -73,7 +73,7 @@ router.get('/room/list', (req, res) => {
 	});
 
 	*/
-	res.send("List");
+	res.send("/room/list has been disabled.");
 });
 
 // Returns list of all users in one room
@@ -99,7 +99,7 @@ router.get('/room/users', (req, res) => {
 	});
 	*/
 
-	res.send("Users");
+	res.send("/room/users has been disabled.");
 });
 
 // Enters a user into a room
@@ -131,7 +131,7 @@ router.post('/room/join', (req, res) => {
 	});
 	*/
 
-	res.send("join");
+	res.send("/room/join has been disabled.");
 });
 
 // Have a user leave a room
@@ -162,7 +162,7 @@ router.post('/room/leave', (req, res) => {
 	});
 	*/
 
-	res.send("leave");
+	res.send("/room/leave has been disabled.");
 });
 
 module.exports = router;
