@@ -24,7 +24,7 @@ NOTES:      This query statements creates our user info table
             if one does not already exists within the DB.
             NOTE: Table schema represented here
 ****************************************************************/
-router.get('/create_userinfotable', function(request,response) {
+router.get('/create_userinfotable', (req, res) => {
   connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable(' +
   //table schema:
   ' first_name VARCHAR(15) not null,' +
@@ -37,12 +37,12 @@ router.get('/create_userinfotable', function(request,response) {
   ' skill1_level VARCHAR(1) DEFAULT 0,' +
   ' skill2_level VARCHAR(1) DEFAULT 0,' +
   ' skill3_level VARCHAR(1) DEFAULT 0,' +
-  ' PRIMARY KEY (device_address));', function (error, results, fields) {
+  ' PRIMARY KEY (device_address));', (error, results) => {
     if(error) {
-      response.send({table_create_status: "Failed: " + error});
+      res.send({ message: "Failed: " + error });
     }
     else {
-      response.send({table_create_status: "Successful"});
+      res.send({ message: "Successful" });
     }
   });
 });
@@ -98,8 +98,7 @@ router.get('/create_userpicturetable', (req,res) => {
      else {
        res.status(200).send({message: "Successful", results: results});
      }
-   });
- })
+  });
 });
 
 /****************************************************************
@@ -117,7 +116,7 @@ NOTES:      This query statement requests the entire table and
 router.get('/selectAll', (req, res) => {
   let SQL = 'SELECT * FROM userinfotable';
   connection.query(SQL, (error, results) => {
-    if(error) {
+    if (error) {
       res.status(500).send({ message: "Failed: " + error });
     }
     else {
@@ -139,8 +138,8 @@ NOTES:      Recives an API Get request, using device_address
 ****************************************************************/
 router.get('/userInfo', function(req, res) {
   let device_address = req.query.device_address;
-  if(!device_address){   //Check if device address is valid
-    res.status(400).({message: "Failed: Missing device_address parameter."});
+  if(!device_address) {   //Check if device address is valid
+    res.status(400).send({ message: "Failed: Missing device_address parameter." });
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -148,14 +147,10 @@ router.get('/userInfo', function(req, res) {
   let SQL = "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = ?;"
   connection.query( SQL, [device_address], (error, results) => {
     if(error) {
-      res.status(500).send({message: "Failed: " + error});
+      res.status(500).send({ message: "Failed: " + error });
     }
     else {
-      res.status(200).send({
-        message : "Successful",
-        device_address : device_address,
-        results : results
-      });
+      res.status(200).send({ message : "Successful", device_address : device_address, results : results });
     }
   });
 });
@@ -179,8 +174,8 @@ NOTES:      Recives an API Get request, using deviceaddress
 ****************************************************************/
 router.get('/pictureInfo', function(req, res) {
   let device_address = req.query.device_address;
-  if(!device_address){   //Check if device address is valid
-    res.status(400).send({message: "Failed: Missing device_address parameter."})
+  if(!device_address) {
+    res.status(400).send({ message: "Failed: Missing device_address parameter." })
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -209,8 +204,8 @@ NOTES:      Recives an GET Post request, updates a persons
 ****************************************************************/
 router.get('/checkIn', (req, res) => {
   let device_address = req.query.device_address;
-  if(!device_address){
-    res.status(400).send({message: 'Failed: Missing device_address parameter'})
+  if(!device_address) {
+    res.status(400).send({ message: 'Failed: Missing device_address parameter' })
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -259,11 +254,11 @@ NOTES:      Recives an GET Post request, updates a persons
 router.get('/checkOut', (req, res) => {
   let device_address = req.query.device_address;
   if(!device_address) {
-    res.status(400).send({ message: "Failed: Missing device_address parameter"})
+    res.status(400).send({ message: "Failed: Missing device_address parameter" })
   }
 
   // Find user in table, delete
-  for (var i=0; i<currentUsers.length; i++){
+  for (var i=0; i<currentUsers.length; i++) {
     if (currentUsers[i].device_address == device_address){
       currentUsers.splice(i, 1);
     }
@@ -476,7 +471,7 @@ NOTES:      Recives an API Post request, updates a persons
 router.post('/updateSkills', (req, res) => {
 	let device_address = req.body.device_address;
 	let skills = req.body.skills;
-  if(!device_address)){ 
+  if(!device_address){
     res.status(400).send({ message: "Failed: device_address and skills are required paremeters." });
 	}
 
@@ -508,10 +503,10 @@ NOTES:      Recives an API Post request, updates a users
 router.post('/updateProfilePic', upload.single('image'), (req, res) => {
 	let device_address = req.body.device_address;
 	let file = req.file;
-  if(!device_address){
+  if(!device_address) {
     res.status(400).send({ message: "Failed: Missing device_address parameter" });
   }
-  if(!file){
+  if(!file) {
     res.status(400).send({ message: "Failed: Missing image file parameter" });
   }
 
@@ -544,7 +539,7 @@ NOTES:      Recives an API Post request, updates a persons
 router.post('/updateAvailability', (req, res) => {
 	let device_address = req.body.device_address;
 	let availability = req.body.availability;
-  if(!device_address || !checkData(availability)){
+  if(!device_address || typeof(availability) === 'undefined') {
     res.status(400).send({ message: "Failed: device_address and availability parameters required." });
   }
 
@@ -576,7 +571,7 @@ NOTES:      Makes a new alert for a user using yours and their
 router.post('/sendAlert', (req, res) => {
 	let device_address = req.body.device_address;
 	let device_address_receiver = req.body.device_address_receiver;
-  if(!device_address || !device_address_receiver){ 
+  if(!device_address || !device_address_receiver) {
 		res.status(400).send({ message: "Failed: device_address and device_address_receiver parameters" });
   }
 
@@ -605,8 +600,8 @@ NOTES:      Makes a new alert for a user using yours and their
 router.post('/deleteAlert', (req, res) => {
 	let device_address = req.body.device_address;
 	let device_address_sender = req.body.device_address_sender;
-  if(!device_address || !device_address_sender){
-		res.status(400).send( "Failed: device_address and device_address_sender parameters required." });
+  if(!device_address || !device_address_sender) {
+		res.status(400).send({ message: "Failed: device_address and device_address_sender parameters required." });
 	}
 
 	let SQL = "DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like ? AND device_address_sender like ?;"
@@ -633,8 +628,8 @@ NOTES:      Makes a new alert for a user using yours and their
 ****************************************************************/
 router.post('/deleteAllAlert', (req, res) => {
 	let device_address = req.body.device_address;
-  if(!device_address){   //Check if device address is valid
-    res.status(400).send({ "Failed: Missing device_address parameter." });
+  if(!device_address) {   //Check if device address is valid
+    res.status(400).send({ message: "Failed: Missing device_address parameter." });
   }
 
 	let SQL = "DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like ?;"
@@ -647,33 +642,6 @@ router.post('/deleteAllAlert', (req, res) => {
     }
   });
 });
-
-/****************************************************************
-
-FUNCTION:   Verifies data is not NULL and valid
-
-ARGUMENTS:  A single value from the API
-
-RETURNS:    True if valid, False if Invalid
-
-NOTES:      Checks the data that was recived from the API call
-            to see if it is valid
-****************************************************************/
-function checkData(data) {
-  if (data == null) //Check if data is null
-  return false;
-  /*
-  //If the entered first or last name contains anything but letters, return false
-  if ((data == req.body.firstName || data == req.body.lastName) && (!validator.isAlpha(req.body.firstName) || !validator.isAlpha(req.body.lastName)))
-  return false;
-
-  //If entered team number is not valid, return false
-  if (!validator.isInt(req.body.teamNumber))
-  return false;
-  */
-
-  return true;
-}
 
 /****************************************************************
 
@@ -702,8 +670,8 @@ NOTES:      If any of the data in the database is changed,
             reload the new data into the currentUsers array.
 ****************************************************************/
 function updateArray(id) {
-  for (var i = 0;  i < currentUsers.length; i++){  //Look for deviceAddress in the array
-    if (currentUsers[i].device_address == id){  //If the device is found
+  for (var i = 0;  i < currentUsers.length; i++) {  //Look for deviceAddress in the array
+    if (currentUsers[i].device_address == id) {  //If the device is found
       currentUsers.splice(i, 1);  //Delete it
                                   //and reload it
       connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
@@ -716,11 +684,11 @@ function updateArray(id) {
 }
 
 function compare(a, b) {
-  if (a.availability < b.availability){
+  if (a.availability < b.availability) {
     return -1;
-  } else if (a.availability > b.availability){
+  } else if (a.availability > b.availability) {
     return 1;
-  } else if (a.availability == b.availability){
+  } else if (a.availability == b.availability) {
     return 0;
   }
 }
@@ -748,6 +716,6 @@ router.post('/manual', (req, res) => {
     }
     res.status(200).send({results: results});
   });
-})
+});
 
 module.exports = router;
