@@ -578,10 +578,10 @@ router.post('/sendAlert', (req, res) => {
 	let SQL = "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES(?, ?);"
   connection.query( SQL, [device_address, device_address_receiver], (error, results) => {
     if(error) {
-      res.status(500).send({ message: "Failed: " + error });
+      res.status(500).send({ status: 500, message: "Failed: " + error });
     }
     else {
-      res.status(200).send({ message: "Successful", device_address: device_address, results: results });
+      res.status(200).send({ status: 200, message: "Successful", device_address: device_address, results: results });
     }
   });
 });
