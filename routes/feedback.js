@@ -31,7 +31,7 @@ router.get('/received', (req, res) => {
 	}
 
 	// Join device_address receiver and receiver on firstname/lastname
-	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp ' +
+	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp, f.positive ' +
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
 			  		'ON ui.device_address = f.device_address_sender ' +
