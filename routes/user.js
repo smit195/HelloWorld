@@ -27,22 +27,41 @@ NOTES:      This query statements creates our user info table
 router.get('/create_userinfotable', (req, res) => {
   connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable(' +
   //table schema:
-  ' first_name VARCHAR(15) not null,' +
-  ' last_name VARCHAR(25) not null,' +
+  ' first_name VARCHAR(15) NOT NULL,' +
+  ' last_name VARCHAR(25) NOT NULL,' +
   ' device_address VARCHAR(40),' +
-  ' availability BOOLEAN not null,' +
-  ' team VARCHAR(25) not null,' +
-  ' user_skill_package JSON,' +
+  ' availability BOOLEAN NOT NULL,' +
+  ' team VARCHAR(25) NOT NULL,' +
   ' profile_picture LONGBLOB,' +
-  ' skill1_level VARCHAR(1) DEFAULT 0,' +
-  ' skill2_level VARCHAR(1) DEFAULT 0,' +
-  ' skill3_level VARCHAR(1) DEFAULT 0,' +
   ' PRIMARY KEY (device_address));', (error, results) => {
     if(error) {
       res.send({ message: "Failed: " + error });
     }
     else {
       res.send({ message: "Successful" });
+    }
+  });
+});
+
+/***********************************************************
+* FUNCTION: Create the skills table if it doesn't exist
+*
+************************************************************/
+
+router.get('/create_skills_table', (req, res) => {
+  let SQL = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.skills( ' +
+            'skill_ID INT AUTO_INCREMENT, ' +
+            'device_address VARCHAR(40) NOT NULL, ' +
+            'skill VARCHAR(20) NOT NULL, ' +
+            'skill_level VARCHAR(1) DEFAULT 0, ' +
+            'PRIMARY KEY (skill_ID)), ' +
+            'FOREIGN KEY (device_address) REFERENCES valkyriePrimaryDB.userinfotable(device_address);';
+  connection.query(SQL, (error, results) => {
+    if (error) {
+      res.send({ message: "Failed: " + error });
+    }
+    else {
+      res.send({ message: "Successful." });
     }
   });
 });
