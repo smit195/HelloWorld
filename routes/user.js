@@ -243,6 +243,7 @@ router.get('/checkIn', (req, res) => {
       // Check if user is in.
       // If so, return.
       // If not, add to currentUsers array
+
       for (var i=0; i<currentUsers.length; i++){
         if (currentUsers[i].device_address == device_address){
           res.send({ message: "Successful", device_address: device_address });
@@ -252,6 +253,10 @@ router.get('/checkIn', (req, res) => {
 
       // Add user to current users
       currentUsers.push(results[0]);
+      let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
+      connection.query(SQL, [device_address], (error, results) => {
+          currentUsers[currentUsers.length - 1]["skills"] = results;
+      });
       currentUsers.sort(compare);
 
       res.send({ message: "Successful", device_address: device_address })
