@@ -522,7 +522,7 @@ router.post('/insertSkill', (req, res) => {
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
-            "VALUES (?, ?, ?);'"
+            "VALUES (?, ?, ?);"
   connection.query( SQL, [device_address, skill, skill_level], (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
