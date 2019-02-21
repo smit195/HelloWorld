@@ -55,7 +55,7 @@ router.get('/create_skills_table', (req, res) => {
             'skill VARCHAR(20) NOT NULL, ' +
             'skill_level VARCHAR(1) DEFAULT 0, ' +
             'PRIMARY KEY (skill_ID)), ' +
-            'FOREIGN KEY (device_address) REFERENCES valkyriePrimaryDB.userinfotable(device_address);';
+            'FOREIGN KEY (device_address) REFERENCES valkyriePrimaryDB.userinfotable(device_address));';
   connection.query(SQL, (error, results) => {
     if (error) {
       res.send({ message: "Failed: " + error });
