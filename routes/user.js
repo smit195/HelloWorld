@@ -534,6 +534,24 @@ router.post('/insertSkill', (req, res) => {
   });
 });
 
+
+router.get('/getSkills', (req, res) => {
+  let device_address = req.query.device_address;
+  if (!device_address) {
+    res.status(400).send({ message: "Failed: device_address required."})
+  }
+
+  let SQL = "SELECT * FROM skills " +
+            "WHERE device_address = ?;";
+  connection.query( SQL, [device_address], (error, results) => {
+    if (error) {
+      res.status(500).send({ message: "Failed: " + error })
+      return;
+    }
+    res.status(200).send({ message: "Successful", results: results })
+  })
+})
+
 /****************************************************************
 
 FUNCTION:   POST: INSERT profile picture from /updateprofilepic/
