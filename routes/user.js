@@ -405,6 +405,7 @@ router.post('/firstTimeRegistration', (req, res) => {
   let team = req.body.team;
   if(!device_address || !first_name || !last_name || !team){  //Check if device address is valid
     res.status(400).send({ message: "Failed: device_address, first_name, last_name, and team parameters required."})
+    return;
   }
 
   //INSERT query creates a new person in userinfotable
@@ -459,6 +460,7 @@ router.post('/updateTeam', (req, res) => {
   let team = req.body.team;
   if(!device_address || !team){   //Check if device address is valid
     res.status(400).send({ message: "Failed: device_address and team parameters ." });
+    return;
   }
 
   //UPDATE query changes data points associated with a given 'device_address'
@@ -494,6 +496,7 @@ router.post('/updateSkill', (req, res) => {
   let skill_level = req.body.skill_level;
   if(!skill_ID || !skill || !device_address || !skill_level) {
     res.status(400).send({ message: "Failed: skill_ID, skill_level, device_address and skill are required paremeters." });
+    return;
 	}
 
   //UPDATE query
@@ -518,6 +521,7 @@ router.post('/insertSkill', (req, res) => {
   let skill_level = req.body.skill_level;
   if(!device_address || !skill || !skill_level) {
     res.status(400).send({ message: "Failed: device_address, skill_level, and skill are required paremeters." });
+    return;
 	}
 
   //UPDATE query
@@ -539,9 +543,10 @@ router.get('/getSkills', (req, res) => {
   let device_address = req.query.device_address;
   if (!device_address) {
     res.status(400).send({ message: "Failed: device_address required."})
+    return;
   }
 
-  let SQL = "SELECT * FROM skills " +
+  let SQL = "SELECT skill_ID, skill, skill_level FROM skills " +
             "WHERE device_address = ?;";
   connection.query( SQL, [device_address], (error, results) => {
     if (error) {
@@ -568,6 +573,7 @@ router.post('/updateProfilePic', upload.single('image'), (req, res) => {
 	let file = req.file;
   if(!device_address) {
     res.status(400).send({ message: "Failed: Missing device_address parameter" });
+    return;
   }
   if(!file) {
     res.status(400).send({ message: "Failed: Missing image file parameter" });
@@ -733,18 +739,32 @@ NOTES:      If any of the data in the database is changed,
             reload the new data into the currentUsers array.
 ****************************************************************/
 function updateArray(id) {
-  for (var i = 0;  i < currentUsers.length; i++) {  //Look for deviceAddress in the array
+  for (let i = 0;  i < currentUsers.length; i++) {  //Look for deviceAddress in the array
     if (currentUsers[i].device_address == id) {  //If the device is found
       currentUsers.splice(i, 1);  //Delete it
                                   //and reload it
       connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
           currentUsers.push(results[0]);
       });
+
+      let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
+      connection.query(SQL, [currentUsers[i].device_address], (error, results) => {
+          currentUsers[i]["skills"] = results;
+      });
     }
   }
 
   currentUsers.sort(compare);
 }
+/*
+function updateArraySkills(id) {
+  for (let i = 0; i < currentUsers.length; i++) {
+    let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
+    connection.query(SQL, [currentUsers[i].device_address], (error, results) => {
+        currentUsers[i]["skills"] = results;
+    });
+  }
+} */
 
 function compare(a, b) {
   if (a.availability < b.availability) {
