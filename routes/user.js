@@ -54,7 +54,7 @@ router.get('/create_skills_table', (req, res) => {
             'device_address VARCHAR(40) NOT NULL, ' +
             'skill VARCHAR(20) NOT NULL, ' +
             'skill_level VARCHAR(1) DEFAULT 0, ' +
-            'PRIMARY KEY (skill_ID)), ' +
+            'PRIMARY KEY (skill_ID), ' +
             'FOREIGN KEY (device_address) REFERENCES valkyriePrimaryDB.userinfotable(device_address));';
   connection.query(SQL, (error, results) => {
     if (error) {
@@ -487,17 +487,43 @@ RETURNS:    API-Returns confirmation code
 NOTES:      Recives an API Post request, updates a persons
             team number
 ****************************************************************/
-router.post('/updateSkills', (req, res) => {
-	let device_address = req.body.device_address;
-	let skills = req.body.skills;
-  if(!device_address){
-    res.status(400).send({ message: "Failed: device_address and skills are required paremeters." });
+router.post('/updateSkill', (req, res) => {
+  let device_address = req.body.device_address;
+	let skill_ID = req.body.skill_ID;
+	let skill = req.body.skill;
+  let skill_level = req.body.skill_level;
+  if(!skill_ID || !skill || !device_address || !skill_level) {
+    res.status(400).send({ message: "Failed: skill_ID, skill_level, device_address and skill are required paremeters." });
 	}
 
-  //UPDATE query changes data points associated with a given 'device_address'
-  //packages the results into a JSON array, sends this package to front end
-	let SQL = 'UPDATE userinfotable SET user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY (?) ) WHERE device_address = ?;'
-  connection.query( SQL, [skills, device_address], (error, results) => {
+  //UPDATE query
+	let SQL = 'UPDATE skills ' +
+            'SET skill = ?, skill_level = ? ' +
+            'WHERE skill_ID = ?;'
+  connection.query( SQL, [skill, skill_level, skill_ID], (error, results) => {
+    if(error) {
+			res.status(500).send({ message: "Failed: " + error });
+    }
+    else {
+      updateArray(device_address);
+      res.status(200).send({ message: "Successful", device_address: device_address, results: results });
+    }
+  });
+});
+
+
+router.post('/insertSkill', (req, res) => {
+  let device_address = req.body.device_address;
+	let skill = req.body.skill;
+  let skill_level = req.body.skill_level;
+  if(!device_address || !skill || !skill_level) {
+    res.status(400).send({ message: "Failed: device_address, skill_level, and skill are required paremeters." });
+	}
+
+  //UPDATE query
+	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
+            "VALUES (?, ?, ?);'"
+  connection.query( SQL, [device_address, skill, skill_ID], (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
     }
