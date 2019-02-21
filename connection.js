@@ -4,7 +4,7 @@ const mysql = require('mysql');
 var connection;
 
 function connectDatabase() {
-	// Create the connection if it does not already exist.
+	// Singleton connection
 	if (!connection) {
 		connection = mysql.createConnection({
 			host     : process.env.RDS_HOSTNAME,
@@ -14,7 +14,7 @@ function connectDatabase() {
 			database : process.env.RDS_DBNAME,
 			multipleStatements: true
 		});
-		
+
 		connection.connect((err) => {
 			if (err) {
 				console.log('Database failed to connect.');
@@ -24,7 +24,7 @@ function connectDatabase() {
 			}
 		});
 	}
-	
+
 	return connection;
 }
 

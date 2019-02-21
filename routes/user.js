@@ -25,15 +25,16 @@ NOTES:      This query statements creates our user info table
             NOTE: Table schema represented here
 ****************************************************************/
 router.get('/create_userinfotable', (req, res) => {
-  connection.query( 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable(' +
-  //table schema:
-  ' first_name VARCHAR(15) NOT NULL,' +
-  ' last_name VARCHAR(25) NOT NULL,' +
-  ' device_address VARCHAR(40),' +
-  ' availability BOOLEAN NOT NULL,' +
-  ' team VARCHAR(25) NOT NULL,' +
-  ' profile_picture LONGBLOB,' +
-  ' PRIMARY KEY (device_address));', (error, results) => {
+  let SQL = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.userinfotable( ' +
+            //table schema:
+            'first_name VARCHAR(15) NOT NULL, ' +
+            'last_name VARCHAR(25) NOT NULL, ' +
+            'device_address VARCHAR(40), ' +
+            'availability BOOLEAN NOT NULL, ' +
+            'team VARCHAR(25) NOT NULL, ' +
+            'profile_picture LONGBLOB, ' +
+            'PRIMARY KEY (device_address));'
+  connection.query(SQL, (error, results) => {
     if(error) {
       res.send({ message: "Failed: " + error });
     }
@@ -159,6 +160,7 @@ router.get('/userInfo', function(req, res) {
   let device_address = req.query.device_address;
   if(!device_address) {   //Check if device address is valid
     res.status(400).send({ message: "Failed: Missing device_address parameter." });
+    return;
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -195,6 +197,7 @@ router.get('/pictureInfo', function(req, res) {
   let device_address = req.query.device_address;
   if(!device_address) {
     res.status(400).send({ message: "Failed: Missing device_address parameter." })
+    return;
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -225,6 +228,7 @@ router.get('/checkIn', (req, res) => {
   let device_address = req.query.device_address;
   if(!device_address) {
     res.status(400).send({ message: 'Failed: Missing device_address parameter' })
+    return;
   }
 
   //SELECT query grabs data points associated with a given 'device_address'
@@ -279,6 +283,7 @@ router.get('/checkOut', (req, res) => {
   let device_address = req.query.device_address;
   if(!device_address) {
     res.status(400).send({ message: "Failed: Missing device_address parameter" })
+    return;
   }
 
   // Find user in table, delete
@@ -306,6 +311,7 @@ router.get('/getCurrent', (req, res)  => {
   let device_address = req.query.device_address;
   if(!device_address){
     res.status(400).send({ message: "Failed: Missing device_address parameter." });
+    return;
   }
 
   var AlertCount = -1;
@@ -370,6 +376,7 @@ router.get('/checkAlert', (req, res) => {
   let device_address = req.query.device_address
   if(!device_address){
     res.status(400).send({ message: "Failed: Missing device_address parameter."})
+    return;
   }
 
   let SQL = "SELECT userinfotable.first_name, userinfotable.last_name, userinfotable.device_address, userinfotable.team, useralerttable.time_of_request, CONVERT_TZ(useralerttable.time_of_request,'GMT','-6:00') AS time_of_request, userpicturetable.profile_picture " +
@@ -615,6 +622,7 @@ router.post('/updateAvailability', (req, res) => {
 	let availability = req.body.availability;
   if(!device_address || typeof(availability) === 'undefined') {
     res.status(400).send({ message: "Failed: device_address and availability parameters required." });
+    return;
   }
 
   //UPDATE query changes data points associated with a given 'device_address'
@@ -647,6 +655,7 @@ router.post('/sendAlert', (req, res) => {
 	let device_address_receiver = req.body.device_address_receiver;
   if(!device_address || !device_address_receiver) {
 		res.status(400).send({ message: "Failed: device_address and device_address_receiver parameters" });
+    return;
   }
 
 	let SQL = "INSERT INTO valkyriePrimaryDB.useralerttable (device_address_sender, device_address_receiver)  VALUES(?, ?);"
@@ -676,6 +685,7 @@ router.post('/deleteAlert', (req, res) => {
 	let device_address_sender = req.body.device_address_sender;
   if(!device_address || !device_address_sender) {
 		res.status(400).send({ message: "Failed: device_address and device_address_sender parameters required." });
+    return;
 	}
 
 	let SQL = "DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like ? AND device_address_sender like ?;"
@@ -761,15 +771,6 @@ function updateArray(id) {
 
   currentUsers.sort(compare);
 }
-/*
-function updateArraySkills(id) {
-  for (let i = 0; i < currentUsers.length; i++) {
-    let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
-    connection.query(SQL, [currentUsers[i].device_address], (error, results) => {
-        currentUsers[i]["skills"] = results;
-    });
-  }
-} */
 
 function compare(a, b) {
   if (a.availability < b.availability) {
@@ -797,6 +798,9 @@ NOTES:      Allows someone to send a query statement through
 
 router.post('/manual', (req, res) => {
   let SQL = req.body.SQL;
+  if (!SQL) {
+    res.status(500).send({ message: "Failed: SQL required."})
+  }
   connection.query(SQL, (err, results) => {
     if (err) {
       res.status(500).send({auth: false, message: "Internal server error: " + err})
