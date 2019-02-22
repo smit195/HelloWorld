@@ -34,9 +34,9 @@ router.get('/received', (req, res) => {
 	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp, f.positive ' +
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
-			  		'ON ui.device_address = f.device_address_sender ' +
+			  		'ON ui.device_address = f.device_address_receiver ' +
 			  		'WHERE ui.device_address = ?;';
-	connection.query(SQL, [device_address_receiver],(error, results) => {
+	connection.query(SQL, [device_address_receiver], (error, results) => {
 		if (error) {
 			res.status(500).send({feedback_received_status : 'Failed:' + error})
 		}
@@ -51,22 +51,21 @@ router.get('/received', (req, res) => {
 router.get('/given', (req, res) => {
 	let device_address_sender = req.query.device_address;
 	if (!device_address_sender) {
-		res.status(400).send({feedback_given_status : 'Failed: Missing device_address parameter'});
+		res.status(400).send({ message: 'Failed: Missing device_address parameter'});
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
-	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp ' +
+	let SQL = 'SELECT ui.first_name, ui.last_name, f.feedback, f.timestamp, f.positive ' +
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
-			  		'ON ui.device_address = f.device_address_receiver ' +
+			  		'ON ui.device_address = f.device_address_sender ' +
 			  		'WHERE ui.device_address = ?;';
 	connection.query(SQL, [device_address_sender], (error, results) => {
 		if (error) {
-			res.status(500).send({feedback_received_status : 'Failed:' + error})
+			res.status(500).send({ message: 'Failed:' + error})
 		}
 		else {
-			res.status(200).send({feedback_received_status : 'Successful',
-							results : results});
+			res.status(200).send({ message: 'Successful', results : results});
 		}
 	});
 });
@@ -77,10 +76,10 @@ router.post('/send', (req, res) => {
 	let feedback = req.body.feedback;
 	let positive = req.body.positive;
 	if (!device_address_sender || !device_address_receiver || !feedback) {
-		res.status(400).send({feedback_insert_status: 'Failed: Required arguments are device_address_sender, device_address_receiver, feedback, and positive.'});
+		res.status(400).send({ message: 'Failed: Required arguments are device_address_sender, device_address_receiver, feedback, and positive.'});
 	}
 	if (typeof positive === 'undefined' || positive === null) {
-		res.status(400).send({feedback_insert_status: 'Failed: positive argument missing - must be a bool.'});
+		res.status(400).send({ message: 'Failed: positive argument missing - must be a bool.'});
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
@@ -88,10 +87,10 @@ router.post('/send', (req, res) => {
 			  		'VALUES ( ?, ?, ?);';
 	connection.query(SQL, [device_address_sender, device_address_receiver, feedback], (error, results) => {
 		if (error) {
-			res.status(500).send({feedback_received_status : 'Failed:' + error})
+			res.status(500).send({ message: 'Failed:' + error})
 		}
 		else {
-			res.status(200).send({feedback_received_status : 'Successful',
+			res.status(200).send({ message: 'Successful',
 							results : results});
 		}
 	});
