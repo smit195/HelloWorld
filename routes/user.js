@@ -529,13 +529,12 @@ router.post('/updateSkill', (req, res) => {
 
 router.post('/insertSkill', (req, res) => {
   let values = checkJson(req.body);
+  console.log("Values object: " + values);
 
   if (!values) {
     res.status(400).send({ message: "Failed: values must be a JSON object." })
     return;
   }
-
-  console.log("Values object: " + values);
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
