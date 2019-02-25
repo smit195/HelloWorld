@@ -535,6 +535,8 @@ router.post('/insertSkill', (req, res) => {
     return;
   }
 
+  console.log(values);
+
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
             "VALUES (?);"
@@ -544,7 +546,7 @@ router.post('/insertSkill', (req, res) => {
     }
     else {
       updateArray(device_address);
-      res.status(200).send({ message: "Successful", device_address: device_address, results: results });
+      res.status(200).send({ message: "Successful", results: results });
     }
   });
 });
