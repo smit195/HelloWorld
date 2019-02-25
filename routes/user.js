@@ -530,10 +530,7 @@ router.post('/updateSkill', (req, res) => {
 router.post('/insertSkill', (req, res) => {
   try {
     console.log("body: " + JSON.stringify(req.body));
-    let values = Array.from(JSON.parse(req.body.userSkills));
-
-    console.log("Log Values: " + values);
-    console.log("Log stringify: " + JSON.body)
+    let values = Array.from(req.body.userSkills);
   }
   catch (e) {
     console.log("Error: " + e);
