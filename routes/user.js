@@ -528,18 +528,17 @@ router.post('/updateSkill', (req, res) => {
 
 
 router.post('/insertSkill', (req, res) => {
-  let device_address = req.body.device_address;
-	let skill = req.body.skill;
-  let skill_level = req.body.skill_level;
-  if(!device_address || !skill || !skill_level) {
-    res.status(400).send({ message: "Failed: device_address, skill_level, and skill are required paremeters." });
+  let values = checkJson(req.body);
+
+  if (!values) {
+    res.status(400).send({ message: "Failed: values must be a JSON object." })
     return;
-	}
+  }
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
-            "VALUES (?, ?, ?);"
-  connection.query( SQL, [device_address, skill, skill_level], (error, results) => {
+            "VALUES (?);"
+  connection.query( SQL, [values], (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
     }
@@ -717,7 +716,7 @@ router.post('/deleteAllAlert', (req, res) => {
   }
 
 	let SQL = "DELETE FROM valkyriePrimaryDB.useralerttable WHERE device_address_receiver like ?;"
-  connection.query(SQL, [device_address],(error, results) => {
+  connection.query(SQL, [device_address], (error, results) => {
     if(error) {
       res.status(500).send({ message: "Failed: " + error });
     }
@@ -780,6 +779,19 @@ function compare(a, b) {
   } else if (a.availability == b.availability) {
     return 0;
   }
+}
+
+function checkJson(jsonString) {
+  try {
+    var o = JSON.parse(jsonString);
+
+    // Handle non-exception-throwing cases:
+    if (o && typeof o === "object") {
+        return o;
+    }
+  }
+  catch (e) { }
+  return false;
 }
 
 /****************************************************************
