@@ -530,12 +530,10 @@ router.post('/updateSkill', (req, res) => {
 router.post('/insertSkill', (req, res) => {
   var values;
   try {
-    console.log("body: " + JSON.stringify(req.body));
     values = Array.from(req.body.userSkills);
   }
   catch (e) {
-    console.log("Error: " + e);
-    res.status(400).send({ message: "shits wack" + e })
+    res.status(400).send({ message: "Failed: Missing values array" })
   }
 
   //UPDATE query
