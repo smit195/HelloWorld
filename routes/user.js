@@ -535,7 +535,7 @@ router.post('/insertSkill', (req, res) => {
     return;
   }
 
-  console.log(values);
+  console.log("Values object: " + values);
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
@@ -545,7 +545,6 @@ router.post('/insertSkill', (req, res) => {
 			res.status(500).send({ message: "Failed: " + error });
     }
     else {
-      updateArray(device_address);
       res.status(200).send({ message: "Successful", results: results });
     }
   });
@@ -601,7 +600,7 @@ router.post('/updateProfilePic', upload.single('image'), (req, res) => {
       res.status(400).send({ message: "Failed: " + error });
     }
     else {
-      updateArray(device_address);
+      ray(device_address);
       res.status(200).send({ message: "Successful", device_address: device_address, results: results });
     }
   });
