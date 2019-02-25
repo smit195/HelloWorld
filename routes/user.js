@@ -528,17 +528,12 @@ router.post('/updateSkill', (req, res) => {
 
 
 router.post('/insertSkill', (req, res) => {
-  let values = checkJson(req.body);
-  console.log("Values object: " + values);
-
-  if (!values) {
-    res.status(400).send({ message: "Failed: values must be a JSON object." })
-    return;
-  }
+  let values = req.body
+  console.log("Log Values: " + values);
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
-            "VALUES (?);"
+            "VALUES ?;"
   connection.query( SQL, [values], (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
@@ -779,19 +774,6 @@ function compare(a, b) {
   } else if (a.availability == b.availability) {
     return 0;
   }
-}
-
-function checkJson(jsonString) {
-  try {
-    var o = JSON.parse(jsonString);
-
-    // Handle non-exception-throwing cases:
-    if (o && typeof o === "object") {
-        return o;
-    }
-  }
-  catch (e) { }
-  return false;
 }
 
 /****************************************************************

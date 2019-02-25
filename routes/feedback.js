@@ -15,10 +15,10 @@ router.post('/createTable', (req, res) => {
 						'FOREIGN KEY (device_address_receiver) REFERENCES valkyriePrimaryDB.userinfotable(device_address));';
 	connection.query(sql, (error, results) => {
 		if(error) {
-			res.status(500).send({table_create_status: "Failed: " + error});
+			res.status(500).send({ message: "Failed: " + error});
 		}
 		else {
-			res.status(200).send({table_create_status: "Successful"});
+			res.status(200).send({ message: "Successful"});
 		}
 	})
 });
@@ -27,7 +27,7 @@ router.post('/createTable', (req, res) => {
 router.get('/received', (req, res) => {
 	let device_address_receiver = req.query.device_address;
 	if (!device_address_receiver) {
-		res.status(400).send({feedback_given_status : 'Failed: Missing device_address_receiver parameter'});
+		res.status(400).send({ message: 'Failed: Missing device_address_receiver parameter'});
 	}
 
 	// Join device_address receiver and receiver on firstname/lastname
@@ -38,11 +38,10 @@ router.get('/received', (req, res) => {
 			  		'WHERE ui.device_address = ?;';
 	connection.query(SQL, [device_address_receiver], (error, results) => {
 		if (error) {
-			res.status(500).send({feedback_received_status : 'Failed:' + error})
+			res.status(500).send({ message: 'Failed:' + error});
 		}
 		else {
-			res.status(200).send({feedback_received_status : 'Successful',
-							results : results});
+			res.status(200).send({ message: 'Successful', results : results});
 		}
 	});
 });
