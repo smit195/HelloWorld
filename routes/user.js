@@ -528,8 +528,14 @@ router.post('/updateSkill', (req, res) => {
 
 
 router.post('/insertSkill', (req, res) => {
-  let values = req.body
-  console.log("Log Values: " + values);
+  try {
+    let values = JSON.parse(req.body);
+    console.log("Log Values: " + values);
+  }
+  catch (e) {
+    console.log("Error: " + e);
+    req.status(400).send({ message: "shits wack" })
+  }
 
   //UPDATE query
 	let SQL = "INSERT INTO skills (device_address, skill, skill_level) " +
