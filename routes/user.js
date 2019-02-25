@@ -536,7 +536,7 @@ router.post('/insertSkill', (req, res) => {
   }
   catch (e) {
     console.log("Error: " + e);
-    req.status(400).send({ message: "shits wack" })
+    res.status(400).send({ message: "shits wack" })
   }
 
   //UPDATE query
