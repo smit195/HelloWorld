@@ -529,6 +529,7 @@ router.post('/updateSkill', (req, res) => {
 
 router.post('/insertSkill', (req, res) => {
   try {
+    console.log("body: " + JSON.stringify(req.body));
     let values = Array.from(JSON.parse(req.body));
 
     console.log("Log Values: " + values);
@@ -536,7 +537,7 @@ router.post('/insertSkill', (req, res) => {
   }
   catch (e) {
     console.log("Error: " + e);
-    res.status(400).send({ message: "shits wack" })
+    res.status(400).send({ message: "shits wack" + e })
   }
 
   //UPDATE query
