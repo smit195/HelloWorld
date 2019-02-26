@@ -785,7 +785,7 @@ function updateArray(id) {
     SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
     connection.query(SQL, [id], (error, results) => {
       if (error) return false;
-      skills = results;
+      userinfo["skills"] = results;
 
       // Update entry in currentUsers array
       for (let i = 0;  i < currentUsers.length; i++) {
@@ -793,7 +793,7 @@ function updateArray(id) {
           currentUsers.splice(i, 1);  // Delete it
                                       // and reload it
           currentUsers.push(userinfo);
-          currentUsers[i]["skills"] = skills;
+          // currentUsers[i]["skills"] = skills;
 
           currentUsers.sort(compare);
           return true;
@@ -802,7 +802,6 @@ function updateArray(id) {
 
       // Create new entry in currentUsers array
       currentUsers.push(userinfo);
-      currentUsers[currentUsers.length-1]["skills"] = skills;
       currentUsers.sort(compare);
       return true;
     });
