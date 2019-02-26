@@ -241,26 +241,7 @@ router.get('/checkIn', (req, res) => {
       res.status(404).send({ message: "Failed: Unknown device_address" });
     }
     else {
-      // This does not scale well. O(n)
-      // TODO: Make currentUsers a hashtable
-
-      // Check if user is in.
-      // If so, return.
-      // If not, add to currentUsers array
-
-      for (var i=0; i<currentUsers.length; i++){
-        if (currentUsers[i].device_address == device_address){
-          res.send({ message: "Successful", device_address: device_address });
-          return;
-        }
-      }
-
-      // Add user to current users
-      currentUsers.push(results[0]);
-      let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
-      connection.query(SQL, [device_address], (error, results) => {
-          currentUsers[currentUsers.length - 1]["skills"] = results;
-      });
+      updateArray(device_address);
       currentUsers.sort(compare);
 
       res.send({ message: "Successful", device_address: device_address })
@@ -552,13 +533,14 @@ router.post('/insertSkill', (req, res) => {
 
 router.post('/deleteSkill', (req, res) => {
   let skill_ID = req.body.skill_ID;
-  if (!skill_ID) {
+  let device_address = req.body.device_address;
+  if (!skill_ID || !req.body.device_address) {
     res.status(400).send({ message: "Failed: skill_ID is a required parameter."})
     return;
   }
 
-  let SQL = "DELETE FROM skills WHERE skill_ID = ?";
-  connection.query( SQL, [skill_ID], (error, results) => {
+  let SQL = "DELETE FROM skills WHERE skill_ID = ? AND device_address = ?";
+  connection.query( SQL, [skill_ID, device_address], (error, results) => {
     if (error) {
       res.status(500).send({ message: "Failed: " + error });
     }
@@ -791,22 +773,40 @@ NOTES:      If any of the data in the database is changed,
             reload the new data into the currentUsers array.
 ****************************************************************/
 function updateArray(id) {
+  var userinfo;
+  var skills;
+
+  // Grab user info and skills
+  let SQL = "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = ?;"
+  connection.query( SQL, [id], (error, results) => {
+    if (error) return false;
+    userinfo = results[0];
+  });
+  let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
+  connection.query(SQL, [id], (error, results) => {
+    if (error) return false;
+    skills = results;
+  });
+
+  // Update entry in currentUsers array
   for (let i = 0;  i < currentUsers.length; i++) {  //Look for deviceAddress in the array
     if (currentUsers[i].device_address == id) {  //If the device is found
       currentUsers.splice(i, 1);  //Delete it
                                   //and reload it
-      connection.query( "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = '" + id + "';", function (error, results, fields) {
-          currentUsers.push(results[0]);
-      });
+      currentUsers.push(userinfo);
+      currentUsers[i]["skills"] = skills;
 
-      let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
-      connection.query(SQL, [currentUsers[i].device_address], (error, results) => {
-          currentUsers[i]["skills"] = results;
-      });
+      currentUsers.sort(compare);
+      return true;
     }
   }
 
+  // Create new entry in currentUsers array
+  currentUsers.push(userinfo);
+  currentUsers[currentUsers.length-1]["skills"] = skills;
   currentUsers.sort(compare);
+  return true;
+
 }
 
 function compare(a, b) {
