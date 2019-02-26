@@ -567,6 +567,23 @@ router.post('/deleteSkill', (req, res) => {
   })
 })
 
+router.post('/deleteAllSkills', (req, res) => {
+  let device_address = req.body.device_address;
+  if (!device_address) {
+    res.status(400).send({ message: "Failed: device_address is a required parameter."})
+    return;
+  }
+
+  let SQL = "DELETE FROM skills WHERE device_address = ?";
+  connection.query( SQL, [device_address], (error, results) => {
+    if (error) {
+      res.status(500).send({ message: "Failed: " + error });
+    }
+    else {
+      res.status(200).send({ message: "Successful", results: results });
+    }
+  })
+})
 
 router.get('/getSkills', (req, res) => {
   let device_address = req.query.device_address;
