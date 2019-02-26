@@ -549,6 +549,24 @@ router.post('/insertSkill', (req, res) => {
   });
 });
 
+router.post('/deleteSkill', (req, res) => {
+  let skill_ID = req.body.skill_ID;
+  if (!skill_ID) {
+    res.status(400).send({ message: "Failed: skill_ID is a required parameter."})
+    return;
+  }
+
+  let SQL = "DELETE FROM skills WHERE skill_ID = ?";
+  connection.query( SQL, [skill_ID], (error, results) => {
+    if (error) {
+      res.status(500).send({ message: "Failed: " + error });
+    }
+    else {
+      res.status(200).send({ message: "Successful", results: results });
+    }
+  })
+})
+
 
 router.get('/getSkills', (req, res) => {
   let device_address = req.query.device_address;
