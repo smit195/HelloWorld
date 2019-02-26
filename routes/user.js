@@ -544,6 +544,7 @@ router.post('/insertSkill', (req, res) => {
 			res.status(500).send({ message: "Failed: " + error });
     }
     else {
+      updateArray(device_address);
       res.status(200).send({ message: "Successful", results: results });
     }
   });
@@ -562,6 +563,7 @@ router.post('/deleteSkill', (req, res) => {
       res.status(500).send({ message: "Failed: " + error });
     }
     else {
+      updateArray(device_address);
       res.status(200).send({ message: "Successful", results: results });
     }
   })
@@ -580,6 +582,7 @@ router.post('/deleteAllSkills', (req, res) => {
       res.status(500).send({ message: "Failed: " + error });
     }
     else {
+      updateArray(device_address);
       res.status(200).send({ message: "Successful", results: results });
     }
   })
