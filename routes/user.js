@@ -782,17 +782,17 @@ function updateArray(id) {
     if (error) return false;
     userinfo = results[0];
   });
-  let SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
+  SQL = "SELECT skill, skill_level, skill_ID FROM skills WHERE device_address = ?;"
   connection.query(SQL, [id], (error, results) => {
     if (error) return false;
     skills = results;
   });
 
   // Update entry in currentUsers array
-  for (let i = 0;  i < currentUsers.length; i++) {  //Look for deviceAddress in the array
-    if (currentUsers[i].device_address == id) {  //If the device is found
-      currentUsers.splice(i, 1);  //Delete it
-                                  //and reload it
+  for (let i = 0;  i < currentUsers.length; i++) {
+    if (currentUsers[i].device_address == id) {
+      currentUsers.splice(i, 1);  // Delete it
+                                  // and reload it
       currentUsers.push(userinfo);
       currentUsers[i]["skills"] = skills;
 
