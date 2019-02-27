@@ -483,20 +483,22 @@ NOTES:      Recives an API Post request, updates a persons
             team number
 ****************************************************************/
 router.post('/updateSkill', (req, res) => {
-  let device_address = req.body.device_address;
-	let skill_ID = req.body.skill_ID;
-	let skill = req.body.skill;
-  let skill_level = req.body.skill_level;
-  if(!skill_ID || !skill || !device_address || !skill_level) {
-    res.status(400).send({ message: "Failed: skill_ID, skill_level, device_address and skill are required paremeters." });
-    return;
-	}
+  var skills;
+  try {
+    skills = Array.from(req.body.userSkills);
+  }
+  catch (e) {
+    res.status(400).send({ message: "Failed: Missing skills array" })
+  }
 
+  var SQL = "";
   //UPDATE query
-	let SQL = 'UPDATE skills ' +
-            'SET skill = ?, skill_level = ? ' +
-            'WHERE skill_ID = ?;'
-  connection.query( SQL, [skill, skill_level, skill_ID], (error, results) => {
+  for (var i = 0; i < skills.length; i++) {
+    SQL += 'UPDATE skills ' +
+           'SET skill = ?, skill_level = ? ' +
+           'WHERE skill_ID = ?; '
+  }
+  connection.query( SQL, [skills], (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
     }
@@ -506,7 +508,6 @@ router.post('/updateSkill', (req, res) => {
     }
   });
 });
-
 
 router.post('/insertSkill', (req, res) => {
   var values;
