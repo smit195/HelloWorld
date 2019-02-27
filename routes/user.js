@@ -483,12 +483,18 @@ NOTES:      Recives an API Post request, updates a persons
             team number
 ****************************************************************/
 router.post('/updateSkill', (req, res) => {
+  var device_address = req.body.device_address;
   var skills;
+  if (!device_address) {
+    res.status(400).send({ message: "Failed: Missing device_address" })
+    return;
+  }
   try {
-    skills = Array.from(req.body.userSkills);
+    skills = Array.from(req.body.skills);
   }
   catch (e) {
     res.status(400).send({ message: "Failed: Missing skills array" })
+    return;
   }
 
   var SQL = "";
@@ -504,7 +510,7 @@ router.post('/updateSkill', (req, res) => {
     }
     else {
       updateArray(device_address);
-      res.status(200).send({ message: "Successful", device_address: device_address, results: results });
+      res.status(200).send({ message: "Successful", results: results });
     }
   });
 });
