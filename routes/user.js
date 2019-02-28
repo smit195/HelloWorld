@@ -501,10 +501,11 @@ router.post('/updateSkill', (req, res) => {
   //UPDATE query
   for (var i = 0; i < skills.length; i++) {
     SQL += 'UPDATE skills ' +
-           'SET skill = ?, skill_level = ? ' +
-           'WHERE skill_ID = ?; '
+           'SET skill = ' + connection.escape(skills[i][0]) + ', ' +
+           'skill_level = ' + connection.escape(skills[i][1]) + " " +
+           'WHERE skill_ID = ' + connection.escape(skills[i][2]) + '; ';
   }
-  connection.query( SQL, skills, (error, results) => {
+  connection.query( SQL, (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
     }
