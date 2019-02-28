@@ -509,6 +509,7 @@ router.post('/updateSkill', (req, res) => {
            'skill_level = ' + connection.escape(skills[i][1]) + " " +
            'WHERE skill_ID = ' + connection.escape(skills[i][2]) + '; ';
   }
+  console.log("SQL: " + SQL);
   connection.query( SQL, (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
