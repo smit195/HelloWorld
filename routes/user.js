@@ -492,7 +492,8 @@ router.post('/updateSkill', (req, res) => {
   try {
     skills = Array.from(req.body.skills);
   }
-  catch (e) {
+  catch (ಠ) {
+    console.log(ಠ);
     res.status(400).send({ message: "Failed: Missing skills array" })
     return;
   }
