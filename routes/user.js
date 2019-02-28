@@ -498,18 +498,15 @@ router.post('/updateSkill', (req, res) => {
     return;
   }
 
-  console.log("skills array: " + skills );
-  console.log("skills size: " + skills.length);
-  var SQL = "";
   //UPDATE query
   for (var i = 0; i < skills.length; i++) {
     console.log("skills: " + skills[i][0] + " " + skills[i][1] + " " + skills[i][2])
     SQL += 'UPDATE skills ' +
-           'SET skill = ' + connection.escape(skills[i][0]) + ', ' +
+           'SET skill = ' + connection.escape(skills[i][2]) + ', ' +
            'skill_level = ' + connection.escape(skills[i][1]) + " " +
-           'WHERE skill_ID = ' + connection.escape(skills[i][2]) + '; ';
+           'WHERE skill_ID = ' + connection.escape(skills[i][0]) + '; ';
   }
-  console.log("SQL: " + SQL);
+  
   connection.query( SQL, (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
