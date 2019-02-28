@@ -498,6 +498,8 @@ router.post('/updateSkill', (req, res) => {
     return;
   }
 
+  console.log("skills array: " + skills );
+  console.log("skills size: " + skills.length);
   var SQL = "";
   //UPDATE query
   for (var i = 0; i < skills.length; i++) {
