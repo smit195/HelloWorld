@@ -501,6 +501,7 @@ router.post('/updateSkill', (req, res) => {
   var SQL = "";
   //UPDATE query
   for (var i = 0; i < skills.length; i++) {
+    console.log("skills: " + skills[i][0] + " " + skills[i][1] + " " + skills[i][2])
     SQL += 'UPDATE skills ' +
            'SET skill = ' + connection.escape(skills[i][0]) + ', ' +
            'skill_level = ' + connection.escape(skills[i][1]) + " " +
