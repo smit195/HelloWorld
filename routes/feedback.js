@@ -35,7 +35,7 @@ router.get('/received', (req, res) => {
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
 			  		'ON ui.device_address = f.device_address_sender ' +
-			  		'WHERE ui.device_address = ?;';
+			  		'WHERE f.device_address_receiver = ?;';
 	connection.query(SQL, [device_address_receiver], (error, results) => {
 		if (error) {
 			res.status(500).send({ message: 'Failed:' + error});
@@ -58,7 +58,7 @@ router.get('/given', (req, res) => {
 			  		'FROM valkyriePrimaryDB.userinfotable AS ui ' +
 			  		'INNER JOIN valkyriePrimaryDB.feedback AS f ' +
 			  		'ON ui.device_address = f.device_address_receiver ' +
-			  		'WHERE ui.device_address = ?;';
+			  		'WHERE f.device_address_sender = ?;';
 	connection.query(SQL, [device_address_sender], (error, results) => {
 		if (error) {
 			res.status(500).send({ message: 'Failed:' + error})
