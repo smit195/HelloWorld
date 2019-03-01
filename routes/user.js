@@ -492,13 +492,14 @@ router.post('/updateSkill', (req, res) => {
   try {
     skills = Array.from(req.body.skills);
   }
-  catch (ಠ) {
-    console.log(ಠ);
+  catch (ಠ_ಠ) {
+    console.log(ಠ_ಠ);
     res.status(400).send({ message: "Failed: Missing skills array" })
     return;
   }
 
   //UPDATE query
+  var SQL;
   for (var i = 0; i < skills.length; i++) {
     console.log("skills: " + skills[i][0] + " " + skills[i][1] + " " + skills[i][2])
     SQL += 'UPDATE skills ' +
@@ -506,7 +507,7 @@ router.post('/updateSkill', (req, res) => {
            'skill_level = ' + connection.escape(skills[i][1]) + " " +
            'WHERE skill_ID = ' + connection.escape(skills[i][0]) + '; ';
   }
-  
+
   connection.query( SQL, (error, results) => {
     if(error) {
 			res.status(500).send({ message: "Failed: " + error });
