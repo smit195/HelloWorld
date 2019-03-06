@@ -427,7 +427,7 @@ router.post('/firstTimeRegistration', (req, res) => {
       });
     }
     else {
-      updateArray(req.headers.deviceaddress);
+      updateArray(device_address);
       res.send({
         message: "Successful",
         device_address: device_address,
