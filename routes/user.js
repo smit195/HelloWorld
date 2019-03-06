@@ -311,7 +311,7 @@ router.get('/getCurrent', (req, res)  => {
     var TEMPcurrentUsers = JSON.parse(JSON.stringify( currentUsers ));  //Temp current user array
 
     for (var i=0; i<TEMPcurrentUsers.length; i++){  //Look for deviceAddress in the array
-      if (TEMPcurrentUsers[i].device_address == req.headers.device_address){  //If the device is found
+      if (TEMPcurrentUsers[i].device_address == device_address){  //If the device is found
         TEMPcurrentUsers.splice(i, 1);  //Delete it
       }
     }
