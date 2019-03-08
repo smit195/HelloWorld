@@ -165,7 +165,10 @@ router.get('/userInfo', function(req, res) {
 
   //SELECT query grabs data points associated with a given 'device_address'
   //packages the results into a JSON, sends this package to front end
-  let SQL = "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable LEFT JOIN userpicturetable ON userinfotable.device_address=userpicturetable.device_address WHERE userinfotable.device_address = ?;"
+  let SQL = "SELECT userinfotable.*, userpicturetable.profile_picture FROM userinfotable " +
+            "LEFT JOIN userpicturetable " +
+            "ON userinfotable.device_address=userpicturetable.device_address " +
+            "WHERE userinfotable.device_address = ?;"
   connection.query( SQL, [device_address], (error, results) => {
     if(error) {
       res.status(500).send({ message: "Failed: " + error });

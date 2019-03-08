@@ -1,4 +1,4 @@
-// This module establishes a singleton database object for querying
+// This module establishes a singleton database connection for querying our AWS database
 
 const mysql = require('mysql');
 var connection;
