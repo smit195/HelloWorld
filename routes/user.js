@@ -35,7 +35,7 @@ router.get('/create_userinfotable', (req, res) => {
             'profile_picture LONGBLOB, ' +
             'PRIMARY KEY (device_address));'
   connection.query(SQL, (error, results) => {
-    if(error) {
+    if (error) {
       res.send({ message: "Failed: " + error });
     }
     else {
@@ -247,7 +247,7 @@ router.get('/checkIn', (req, res) => {
       updateArray(device_address);
       currentUsers.sort(compare);
 
-      res.send({ message: "Successful", device_address: device_address })
+      res.status(200).send({ message: "Successful", device_address: device_address })
     }
   });
 });

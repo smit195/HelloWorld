@@ -76,9 +76,11 @@ router.post('/send', (req, res) => {
 	let positive = req.body.positive;
 	if (!device_address_sender || !device_address_receiver || !feedback) {
 		res.status(400).send({ message: 'Failed: Required arguments are device_address_sender, device_address_receiver, feedback, and positive.'});
+		return;
 	}
 	if (typeof positive === 'undefined' || positive === null) {
 		res.status(400).send({ message: 'Failed: positive argument missing - must be a bool.'});
+		return;
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
