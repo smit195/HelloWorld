@@ -597,7 +597,7 @@ NOTES:      Recives an API Post request, updates a users
             profile picture
 ****************************************************************/
 router.post('/updateProfilePic', upload.single('image'), (req, res) => {
-	let device_address = req.body.device_address;
+	let device_address = req.headers.device_address;
 	let file = req.file;
   if(!device_address) {
     res.status(400).send({ message: "Failed: Missing device_address parameter" });
