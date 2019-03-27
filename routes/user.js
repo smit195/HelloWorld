@@ -493,6 +493,7 @@ router.post('/updateSkill', (req, res) => {
            'skill_level = ' + connection.escape(skills[i][1]) + " " +
            'WHERE skill_ID = ' + connection.escape(skills[i][0]) + '; ';
   }
+  console.log(SQL);
 
   connection.query( SQL, (error, results) => {
     if(error) {
