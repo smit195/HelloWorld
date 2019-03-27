@@ -405,25 +405,8 @@ router.post('/firstTimeRegistration', (req, res) => {
   }
 
   //INSERT query creates a new person in userinfotable
-  let SQL = "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team, user_skill_package) VALUES ('" +
-            first_name + "', '" +
-            last_name + "', '" +
-            device_address + "', " +
-            //WARNING: availability defaults to TRUE
-            //despite the fact that the next line says "false"
-            "false, " + "'" +
-            team + "', " +
-            //defaults to three empty strings
-            'JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""))' +
-            //ON DUPLICATE KEY updates an existing users data based on the device_address
-            ") ON DUPLICATE KEY UPDATE first_name = '" + first_name +
-            "', last_name = '" + last_name +
-            //WARNING: availability defaults to TRUE
-            //despite the fact that the next line says "false"
-            "', availability = false" +
-            ", team = '" + team +
-            "', " + 'user_skill_package = JSON_OBJECT( "skills", JSON_ARRAY ("", "", ""));'
-  connection.query(SQL, (error, results) => {
+  let SQL = "INSERT INTO userinfotable (first_name, last_name, device_address, availability, team) VALUES ( ?, ?, ?, ?, ?);"
+  connection.query(SQL, [first_name, last_name, device_address, false, team], (error, results) => {
     if(error) {
       res.send({
         message: "Failed: " + error
@@ -633,7 +616,7 @@ router.post('/updateProfilePic', upload.single('image'), (req, res) => {
       res.status(400).send({ message: "Failed: " + error });
     }
     else {
-      ray(device_address);
+      updateArray(device_address);
       res.status(200).send({ message: "Successful", device_address: device_address, results: results });
     }
   });
