@@ -485,7 +485,7 @@ router.post('/updateSkill', (req, res) => {
   }
 
   //UPDATE query
-  var SQL;
+  var SQL = "";
   for (var i = 0; i < skills.length; i++) {
     console.log("skills: " + skills[i][0] + " " + skills[i][1] + " " + skills[i][2])
     SQL += 'UPDATE skills ' +
