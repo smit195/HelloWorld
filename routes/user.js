@@ -507,6 +507,7 @@ router.post('/updateSkill', (req, res) => {
 });
 
 router.post('/insertSkill', (req, res) => {
+  let device_address = req.body.device_address;
   var values;
   try {
     values = Array.from(req.body.userSkills);
@@ -523,7 +524,7 @@ router.post('/insertSkill', (req, res) => {
 			res.status(500).send({ message: "Failed: " + error });
     }
     else {
-      updateArray(device_address);
+      updateArray(values[0][0]);
       res.status(200).send({ message: "Successful", results: results });
     }
   });
