@@ -84,8 +84,8 @@ router.post('/send', (req, res) => {
 	}
 
 	// Join device_address sender and receiver on firstname/lastname
-	let SQL = 'INSERT INTO valkyriePrimaryDB.feedback (device_address_sender, device_address_receiver, feedback) ' +
-			  		'VALUES ( ?, ?, ?);';
+	let SQL = 'INSERT INTO valkyriePrimaryDB.feedback (device_address_sender, device_address_receiver, feedback, positive) ' +
+			  		'VALUES ( ?, ?, ?, ?);';
 	connection.query(SQL, [device_address_sender, device_address_receiver, feedback], (error, results) => {
 		if (error) {
 			res.status(500).send({ message: 'Failed:' + error})
