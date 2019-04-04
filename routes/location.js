@@ -9,7 +9,7 @@ router.post('/create_table', (req, res) => {
       res.status(500).send({ message: "Failed: " + error })
     }
     else {
-      res.status(200).send({ message: "Succesful.", results: results });
+      res.status(200).send({ message: "Successful.", results: results });
     }
   })
 })
