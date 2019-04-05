@@ -97,4 +97,23 @@ router.post('/send', (req, res) => {
 	});
 });
 
+
+router.post('/createCategoryTable', (req, res) => {
+	let SQL = 'CREATE TABLE IF NOT EXISTS valkyriePrimaryDB.feedbackcategory(' +
+						'categoryID INT AUTO_INCREMENT, ' +
+						'categoryName VARCHAR(40) NOT NULL, ' +
+						'PRIMARY KEY (categoryID));';
+						
+	connection.query(SQL, (error, results) => {
+		if(error) {
+			res.status(500).send({ message: "Failed: " + error});
+		}
+		else {
+			res.status(200).send({ message: "Successful"});
+		}
+	})
+});
+
+
+
 module.exports = router;
