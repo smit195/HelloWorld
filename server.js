@@ -11,6 +11,7 @@ app.use(express.static('public'));
 app.use("/user", require("./routes/user"));
 app.use("/feedback", require("./routes/feedback"));
 app.use("/location", require("./routes/location"))
+//app.use("/location", required("./routes/location"))
 //app.use("room", require("./routes/rooms"));
 
 app.listen(port, () => {
